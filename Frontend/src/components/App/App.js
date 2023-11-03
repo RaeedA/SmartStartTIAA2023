@@ -7,7 +7,7 @@ import Home from '../../pages';
 import Example from '../../pages/example';
 
 function App() {
-
+    // Contains all the pages in the document and routes to them, more behavior defined in main index
     return (
         <Router>
             <Navbar />
