@@ -1,9 +1,10 @@
 var express = require('express');
+const {example} = require('../api/exampleController');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+/* GET example. */
+router.post('/example', function(req, res, next) {
+  example(req, res);
 });
 
 module.exports = router;
