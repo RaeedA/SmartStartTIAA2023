@@ -1,7 +1,8 @@
 const { finishController } = require("../util")
 
+// Example adder function, these should all be functions
 function example(req, res) {
-    console.log(req.body)
+    // Add the numbers and save them to an object
     var message = {
         body: [parseInt(req.body.value1)+parseInt(req.body.value2)]
     }

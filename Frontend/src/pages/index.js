@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Pages index, responsible for the home page
+ */
 const Home = () => {
 	return (
 		<div>
