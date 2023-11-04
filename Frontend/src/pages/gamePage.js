@@ -14,7 +14,7 @@ export default class GamePage extends React.Component {
         age: 18,
         balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
         name: 'First Last',
-        interactionText: '',
+        interactionText: [],
         showActivities: false,
         showGamble: false, 
         gambleAmount: '', 
@@ -77,12 +77,14 @@ export default class GamePage extends React.Component {
     {/*For now it just subtracts amount gambled from character's balance */}
     event.preventDefault();
     const amount = parseFloat(this.state.gambleAmount);
+    const gains = (Math.random() * (amount * 1.25));
     if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
       this.setState(prevState => ({
-        balance: prevState.balance - amount + (Math.random() * (amount * 1.25)),
+        balance: prevState.balance - amount + gains,
         gambleAmount: '', //resets gamble amount
-        showGamble: false
+        showGamble: false,
       }), this.checkBankruptcy); // checks for bankruptcy after gambling
+      this.updateConsole("Your gamble of $" + amount + " adjusted your balance by " + (-amount + gains).toFixed(2) + "!");
     } else {
       alert('You cannot gamble that amount.');  //if they try to gamble more than they have
     }
@@ -103,6 +105,22 @@ export default class GamePage extends React.Component {
         this.checkBankruptcy();
       }
     });
+  }
+
+  updateConsole(newMessage) {
+    this.setState(prevState => ({
+      interactionText: [...prevState.interactionText, newMessage]
+    }));
+  }
+
+  clearConsole() {
+    this.setState({ interactionText: [] });
+  }
+  
+  removeLastMessage() {
+    this.setState(prevState => ({
+      interactionText: prevState.interactionText.slice(0, -1)
+    }));
   }
 
   //styling elements
@@ -283,14 +301,12 @@ export default class GamePage extends React.Component {
 
         {/* Middle of screen*/}
         <div style={{ paddingTop: '60px', paddingBottom: '80px', textAlign: 'center' }}>
-          <form onSubmit={this.handleSubmit}>
-            {/* input box*/}
-            <input
-              style={inputStyle}
-              type="text"
-              value={this.state.interactionText}
-              onChange={this.handleChange}
-              placeholder={`What's your next move at age ${this.state.age}?`}
+            {/* Console */}
+            <textarea
+            readOnly
+            style={inputStyle}
+            value={this.state.interactionText.join('\n')}
+            placeholder={`What's your next move at age ${this.state.age}?`}
             />
             
             {/* Activities Menu */}
@@ -323,7 +339,6 @@ export default class GamePage extends React.Component {
                 </form>
             </div>
             )}
-          </form>
         </div>
 
         {/* bottom of screen */}
