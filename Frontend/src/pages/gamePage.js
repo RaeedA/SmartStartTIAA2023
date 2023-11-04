@@ -1,4 +1,5 @@
 import React from "react";
+import background1 from '../images/background1.png';
 
 /**
  * Game Page
@@ -217,9 +218,26 @@ export default class GamePage extends React.Component {
     cursor: 'pointer',
     };
 
+    const backgroundStyle = {
+        backgroundImage: `url(${background1})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        width: '100vw',
+        height: '100vh',
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        zIndex: '-1'
+      };
+
 
     return (
       <div>
+        {/* Background image */}
+        <div style={backgroundStyle}></div>
+
         {/* Header section */}
         <div style={headerStyle}>
           {/* "SmartStart" on top left */}
