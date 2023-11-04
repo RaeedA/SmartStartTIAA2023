@@ -9,7 +9,7 @@ export default class GamePage extends React.Component {
       // character initial traits
       this.state = {
         age: 18,
-        balance: Math.random() * (10000 - 500) + 500), //random balance between 500 an 10,000 dollars
+        balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
         name: 'First Last',
         interactionText: '',
         showActivities: false,
@@ -55,10 +55,10 @@ export default class GamePage extends React.Component {
   }
 
   handleGambleSubmit(event) {
-    {/*For now just subtracts amount gambled from character's balance */}
+    {/*For now it just subtracts amount gambled from character's balance */}
     event.preventDefault();
     const amount = parseFloat(this.state.gambleAmount);
-    if (!isNaN(amount) && amount > 0 && amount <= this.state.balance) {
+    if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
       this.setState(prevState => ({
         balance: prevState.balance - amount,
         gambleAmount: '', //resets gamble amount
@@ -70,7 +70,7 @@ export default class GamePage extends React.Component {
   }
 
   checkBankruptcy() {
-    if (this.state.balance <= 0) {
+    if (this.state.balance <= 0.01) {
       this.setState({ isBankrupt: true });
     }
   }
