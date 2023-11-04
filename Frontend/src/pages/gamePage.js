@@ -9,7 +9,7 @@ export default class GamePage extends React.Component {
       // character initial traits
       this.state = {
         age: 18,
-        balance: 1000.00,
+        balance: Math.random() * (10000 - 500) + 500), //random balance between 500 an 10,000 dollars
         name: 'First Last',
         interactionText: '',
         showActivities: false,
