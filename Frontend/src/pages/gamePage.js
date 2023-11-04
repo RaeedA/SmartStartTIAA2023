@@ -59,6 +59,7 @@ export default class GamePage extends React.Component {
 
   increaseAge() {
     this.setState(prevState => ({ age: prevState.age + 1 }));
+    this.updateConsole("You turned " + this.state.age + "!");
   }
 
   toggleActivities() {
