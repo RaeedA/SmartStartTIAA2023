@@ -1,5 +1,6 @@
 import React from "react";
 import background1 from '../images/background1.png';
+import background2 from '../images/2ndBackground.png';
 
 /**
  * Game Page
@@ -16,7 +17,8 @@ export default class GamePage extends React.Component {
         showActivities: false,
         showGamble: false, 
         gambleAmount: '', 
-        isBankrupt: false
+        isBankrupt: false,
+        ownsHouse: false
       };
 
     // Bindings
@@ -28,6 +30,7 @@ export default class GamePage extends React.Component {
     this.handleGambleChange = this.handleGambleChange.bind(this);
     this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
+    this.purchaseHouse = this.purchaseHouse.bind(this);
   }
 
   // Handlers
@@ -74,6 +77,17 @@ export default class GamePage extends React.Component {
     if (this.state.balance <= 0.01) {
       this.setState({ isBankrupt: true });
     }
+  }
+
+  purchaseHouse() {
+    this.setState({
+      ownsHouse: true,
+      balance: this.state.balance - 1000,
+    }, () => {
+      if (this.state.balance < 0) {
+        this.checkBankruptcy();
+      }
+    });
   }
 
   //styling elements
@@ -219,7 +233,7 @@ export default class GamePage extends React.Component {
     };
 
     const backgroundStyle = {
-        backgroundImage: `url(${background1})`,
+        backgroundImage: `url(${this.state.ownsHouse ? background2 : background1})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
@@ -270,7 +284,8 @@ export default class GamePage extends React.Component {
               <button>Apply for Job</button>
               <button>Stock Market</button>
               <button>Roth IRA</button>
-              <button>Buy Real Estate</button>
+              <button onClick={() => this.purchaseHouse()}>Purchase House</button>
+              <button>TIAA</button>
               <button onClick={this.toggleGamble}>Gamble</button>
             </div>
             {/* Gamble Menu */}
