@@ -14,10 +14,6 @@ export default class GamePage extends React.Component {
         age: 18,
         balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
         name: 'First Last',
-		realEstate: [[]],
-		stocks: [],
-		rothIRA: [],
-		job: '',
         interactionText: [],
         showActivities: false,
         showGamble: false, 
@@ -35,10 +31,8 @@ export default class GamePage extends React.Component {
     this.increaseAge = this.increaseAge.bind(this);
     this.toggleActivities = this.toggleActivities.bind(this);
     this.toggleGamble = this.toggleGamble.bind(this);
-	this.toggleRealEstate = this.toggleRealEstate.bind(this);
     this.handleGambleChange = this.handleGambleChange.bind(this);
     this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
-	this.handleRealEstate = this.handleRealEstate.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
     
@@ -65,7 +59,7 @@ export default class GamePage extends React.Component {
 
   increaseAge() {
     this.setState(prevState => ({ age: prevState.age + 1 }));
-    this.updateConsole("You turned " + this.state.age + "!");
+    this.updateConsole("You turned " + (this.state.age + 1) + "!");
   }
 
   toggleActivities() {
@@ -76,10 +70,6 @@ export default class GamePage extends React.Component {
     this.setState(prevState => ({ showGamble: !prevState.showGamble }));
   }
 
-	toggleRealEstate() {
-		this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
-	  }
-	  
   handleGambleChange(event) {
     this.setState({ gambleAmount: event.target.value });
   }
@@ -100,16 +90,6 @@ export default class GamePage extends React.Component {
       alert('You cannot gamble that amount.');  //if they try to gamble more than they have
     }
   }
-  
-   handleRealEstate(event) {
-		{/*For now it just subtracts amount gambled from character's balance */}
-		event.preventDefault();
-		this.setState((prevState) => ({
-			realEstate: [...prevState.realEstate, ["Mansion",100]],
-			showRealEstate: false,
-			balance: prevState.balance - 100,
-		  }));
-	  }
 
   checkBankruptcy() {
     if (this.state.balance <= 0.01) {
@@ -254,21 +234,7 @@ export default class GamePage extends React.Component {
         zIndex: 2,
         borderRadius: '10px'
       };
-	  
-	const realEstateMenuStyle = {
-			display: this.state.showRealEstate ? 'block' : 'none',
-			position: 'fixed',
-			top: '50%',
-			left: '50%',
-			transform: 'translate(-50%, -50%)',
-			width: '300px',
-			backgroundColor: '#ffffff',
-			boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-			padding: '20px',
-			zIndex: 2,
-			borderRadius: '10px'
-		  };
-	  
+
     const bankruptModalStyle = {
     position: 'fixed',
     top: 0,
@@ -348,11 +314,10 @@ export default class GamePage extends React.Component {
             <div style={activitiesMenuStyle}>
               {/* buttons to change / implement */}
               <button>Apply for Job</button>
-              <button>TIAA</button>
               <button>Stock Market</button>
               <button>Roth IRA</button>
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
-			  <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
+              <button>TIAA</button>
               <button onClick={this.toggleGamble}>Gamble</button>
             </div>
             {/* Gamble Menu */}
@@ -375,16 +340,6 @@ export default class GamePage extends React.Component {
                 </form>
             </div>
             )}
-			{this.state.showRealEstate && (
-				<div style={realEstateMenuStyle}>
-					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button>
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
-					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
-					</form>
-				</div>
-				)}
         </div>
 
         {/* bottom of screen */}
