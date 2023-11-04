@@ -79,7 +79,7 @@ export default class GamePage extends React.Component {
     const amount = parseFloat(this.state.gambleAmount);
     if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
       this.setState(prevState => ({
-        balance: prevState.balance - amount,
+        balance: prevState.balance - amount + (Math.random() * (amount * 1.25)),
         gambleAmount: '', //resets gamble amount
         showGamble: false
       }), this.checkBankruptcy); // checks for bankruptcy after gambling
