@@ -1,6 +1,7 @@
 import React from "react";
 import background1 from '../images/background1.png';
 import background2 from '../images/2ndBackground.png';
+import gamemusic from '../music/gamemusic.mp3';
 
 /**
  * Game Page
@@ -21,6 +22,9 @@ export default class GamePage extends React.Component {
         ownsHouse: false
       };
 
+      
+      
+
     // Bindings
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,6 +35,17 @@ export default class GamePage extends React.Component {
     this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
+    
+    //music
+    this.audio = new Audio(gamemusic);
+  }
+
+  componentDidMount() {
+    this.audio.play(); // Play the music when the component mounts
+  }
+
+  componentWillUnmount() {
+    this.audio.pause(); // Pause the music when the component unmounts
   }
 
   // Handlers
