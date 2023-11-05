@@ -24,6 +24,7 @@ import arrowup from '../images/arrowup.png';
 import coin from '../images/coin.png';
 import TIAA from '../images/TIAA.png';
 import stat from '../images/stats.png';
+import { CallAPI } from "../util";
 
 //import TIAA from '../images/TIAA.png';
 /**
@@ -46,7 +47,7 @@ export default class GamePage extends React.Component {
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
         newEventResponse: '',
-		showStatMenu: false,
+		    showStatMenu: false,
         interactionText: [],
         showActivities: false,
         showNameModal: true,
@@ -57,8 +58,37 @@ export default class GamePage extends React.Component {
         gambleAmount: '', 
         isBankrupt: false,
         ownsHouse: false,
-        currentFrame: 0
+        currentFrame: 0,
+        ownsAppartment: false,
+            showAdvice: false,
+            adviceText: '',
+            eventsHistory: [],
+            headlineHistory: []
       };
+      
+      //TIAA advice
+      this.adviceArray = [
+        'The sooner you begin saving and investing for retirement, the more time your money has to grow.',
+        'Spread your investments across different asset classes to reduce risk.',
+        'If available, take advantage of employer-sponsored retirement plans like 401(k)s.',
+        'Consider opening traditional or Roth IRAs for additional retirement savings.',
+        'Explore the option of annuities to secure a steady income stream in retirement.',
+        'Create a retirement budget to estimate your expenses and plan accordingly.',
+        'Understand your Social Security benefits and when to start claiming them.',
+        'Account for healthcare expenses, as they often increase in retirement.',
+        'Consider how inflation may erode the purchasing power of your savings.',
+        'Consult with financial advisors to make informed decisions tailored to your specific situation.',
+        'Plan for a retirement that may last several decades to ensure you don\'t outlive your savings.',
+        'Maintain an emergency fund to cover unexpected expenses in retirement.',
+        'Develop a plan for the distribution of your assets after you pass away.',
+        'Optimize your investments for tax efficiency to minimize tax burdens in retirement.',
+        'Balance liquidity needs with potential investment returns based on your retirement stage.',
+        'Determine your risk tolerance and align your investments accordingly.',
+        'Be prepared to adjust your retirement plan as circumstances change.',
+        'Remember that retirement planning is a dynamic process, and it\'s essential to stay informed, reassess your plan periodically, and seek professional guidance when needed.'
+
+      ];            
+        };
 
       
       
@@ -121,6 +151,46 @@ export default class GamePage extends React.Component {
   restartGame() {
     window.location.reload()
   }
+    increaseAge() {
+        this.setState(prevState => ({ age: prevState.age + 1 }), () => {
+            this.updateConsole("Aging Up...")
+            this.checkAge();
+            const toSend = {
+                name: this.state.name,
+                age: this.state.age,
+                rothIRA: this.state.rothIRA,
+                balance: this.state.balance,
+                job: this.state.job,
+                income: this.state.income,
+                stocks: this.state.stocks,
+                houseType: this.state.ownsHouse ? "house" : "",
+                education: this.state.education,
+                expenses: this.state.expenses,
+                stocks: this.state.stocks,
+                realEstate: this.state.realEstate,
+                realEstateIncome: this.state.realEstateIncome,
+                eventsHistory: this.state.eventsHistory,
+                headlineHistory: this.state.headlineHistory
+            }
+            CallAPI("newYear", toSend).then((response) => {
+                this.setState(() => ({
+                    balance: response.balance,
+                    stocks: response.stocks,
+                    eventsHistory: response.eventsHistory,
+                    headlineHistory: response.headlineHistory,
+                    newEventInfo: response.eventsHistory[response.eventsHistory.length-1].content
+                }), () => {
+                    this.removeLastMessage()
+                    this.updateConsole(this.state.newEventInfo)
+                    this.toggleNewEvent();
+                })
+            })
+        })
+    }
+
+    restartGame() {
+        window.location.reload()
+    }
 
   restartGame() {
     window.location.reload()
@@ -182,14 +252,30 @@ export default class GamePage extends React.Component {
 		this.updateConsole("You purchased a "+ this.state.realEstate[0][0]);
 	  }
 	  
-	 handleNewEvent(event) {
-		event.preventDefault();
-		const response = event.target.EventResponse.value;
-		if (response.trim()) {
-        this.setState({ EventResponse: response, showNewEvent: false});
-		this.setState({showInfo: true});
-      } else {
-        alert('Please enter a valid name.');
+
+  	handleNewEvent(event) {
+        event.preventDefault();
+        const userResponse = event.target.EventResponse.value;
+        if (userResponse.trim()) {
+            CallAPI("finishEvent", {message: userResponse, history: this.state.eventsHistory}).then((response) => {
+                this.updateConsole(userResponse)
+                this.setState(() => ({
+                    eventHistory: response,
+                    newEventInfo: response.history[response.history.length-1].content
+                }), () => {
+                    this.updateConsole(this.state.newEventInfo);
+                    this.updateConsole("You turned " + (this.state.age) + "!");
+                })
+            })
+        } else {
+            alert('Please enter an input.');
+        }
+    }
+
+    checkBankruptcy() {
+          if (this.state.balance <= 0.01) {
+              this.setState({ isBankrupt: true });
+          }
       }
 	  this.updateConsole(this.state.showInfo);                                                               //remove later
     }
@@ -808,21 +894,45 @@ export default class GamePage extends React.Component {
 					<br />
 					Background: {this.state.backgroundInfo}
 					<br />
-				</label>
-				<button type="button" onClick={this.toggleStatMenu}>Close</button>
-			</div>
-			)}
-			{/* New Event Response*/}
-			{this.state.showNewEvent && (
-			<div style={newEventStyle}>
-				<form onSubmit={this.handleNewEvent}>
-					<p>Lorem ipsum</ p>
-					<input type="text" name="EventResponse" required />
-				<button type="submit" >Submit</button>
-				</form>
-			</div>
-			)}
-			{/* Info Window */}
+					</label>
+					<button type="button" onClick={this.toggleStatMenu}>Close</button>
+				</div>
+				)}
+        {this.state.showHousing && (
+				<div style={housingMenuStyle}>
+					<form onSubmit={this.handleRealEstate}>
+					<label>
+					Appartment
+					<br />
+					---
+					<br />
+					House
+					<br />
+					---
+					<br />
+					</label>
+					<button type="button" onClick={this.toggleHousing}>Close</button>
+					</form>
+				</div>
+				)}
+
+        {this.state.showAdvice && (
+          <div style={tiaaAdviceMenuStyle}>
+            <p>{this.state.adviceText}</p>
+            <button type="button" onClick={this.toggleTIAAAdvice}>Cool!</button>
+          </div>
+        )}
+        {/* New Event Response*/}
+        {this.state.showNewEvent && (
+        <div style={newEventStyle}>
+          <form onSubmit={this.handleNewEvent}>
+            <p>{this.state.newEventInfo}</ p>
+            <input type="text" name="EventResponse" required />
+          <button type="submit" >Submit</button>
+          </form>
+        </div>
+    )}
+	{/* Info Window */}
 			{this.state.showInfo && (
 			<div style={infoStyle}>
 			<form>
@@ -831,7 +941,6 @@ export default class GamePage extends React.Component {
 				</ form>
 			</div>
 			)}
-        </div>
         {/* bottom of screen */}
         <div style={bottomButtonContainerStyle}>
 		
