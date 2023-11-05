@@ -2,10 +2,22 @@ import React from "react";
 import background1 from '../images/background1.png';
 import background2 from '../images/2ndBackground.png';
 import gamemusic from '../music/gamemusic.mp3';
+import liveFrame1 from '../images/TeenMCSprites/18MC1.png';
+import liveFrame2 from '../images/TeenMCSprites/18MC2.png';
+import liveFrame3 from '../images/TeenMCSprites/18MC3.png';
 import frame1 from '../images/TeenMCSprites/18MC1.png';
 import frame2 from '../images/TeenMCSprites/18MC2.png';
 import frame3 from '../images/TeenMCSprites/18MC3.png';
-
+import frame4 from '../images/TeenMCSprites/22MC1.png';
+import frame5 from '../images/TeenMCSprites/22MC2.png';
+import frame6 from '../images/TeenMCSprites/22MC3.png';
+import frame7 from '../images/TeenMCSprites/35MC1.png';
+import frame8 from '../images/TeenMCSprites/35MC2.png';
+import frame9 from '../images/TeenMCSprites/35MC3.png';
+import frame10 from '../images/TeenMCSprites/55MC1.png';
+import frame11 from '../images/TeenMCSprites/55MC2.png';
+import frame12 from '../images/TeenMCSprites/55MC3.png';
+//import TIAA from '../images/TIAA.png';
 /**
  * Game Page
  */
@@ -17,10 +29,10 @@ export default class GamePage extends React.Component {
         age: 18,
         balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
         name: 'Your Name',
-		realEstate: [[]],
-		stocks: [],
-		rothIRA: [],
-		job: '',
+		    realEstate: [[]],
+		    stocks: [],
+		    rothIRA: [],
+		    job: '',
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
         showStatMenu: false,
@@ -43,10 +55,10 @@ export default class GamePage extends React.Component {
     this.increaseAge = this.increaseAge.bind(this);
     this.toggleActivities = this.toggleActivities.bind(this);
     this.toggleGamble = this.toggleGamble.bind(this);
-	this.toggleRealEstate = this.toggleRealEstate.bind(this);
+	  this.toggleRealEstate = this.toggleRealEstate.bind(this);
     this.handleGambleChange = this.handleGambleChange.bind(this);
     this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
-	this.handleRealEstate = this.handleRealEstate.bind(this);
+	  this.handleRealEstate = this.handleRealEstate.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
@@ -83,6 +95,7 @@ export default class GamePage extends React.Component {
   increaseAge() {
     this.setState(prevState => ({ age: prevState.age + 1 }));
     this.updateConsole("You turned " + (this.state.age + 1) + "!");
+    this.checkAge();
   }
 
   toggleStatMenu() {
@@ -136,6 +149,34 @@ export default class GamePage extends React.Component {
     if (this.state.balance <= 0.01) {
       this.setState({ isBankrupt: true });
     }
+  }
+
+  checkAge() {
+    if (this.state.age < 22) {
+      liveFrame1 = frame1;
+      liveFrame2 = frame2;
+      liveFrame3 = frame3;
+      
+    }
+    else if (this.state.age >= 22 && this.state.age < 35) {
+      liveFrame1 = frame4;
+      liveFrame2 = frame5;
+      liveFrame3 = frame6;
+      
+    }
+    else if (this.state.age >= 35 && this.state.age < 50) {
+      liveFrame1 = frame7;
+      liveFrame2 = frame8;
+      liveFrame3 = frame9;
+      
+    }
+    else if (this.state.age >= 50) {
+      liveFrame1 = frame10;
+      liveFrame2 = frame11;
+      liveFrame3 = frame12;
+      
+    }
+
   }
 
   purchaseHouse() {
@@ -431,7 +472,6 @@ export default class GamePage extends React.Component {
             <div style={activitiesMenuStyle}>
               {/* buttons to change / implement */}
               <button>Apply for Job</button>
-              <button>TIAA</button>
               <button>Stock Market</button>
               <button>Roth IRA</button>
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
@@ -506,9 +546,9 @@ export default class GamePage extends React.Component {
         {/* Animation Frames */}
     <div style={animationContainerStyle}>
     <img src={
-        this.state.currentFrame === 0 ? frame1 :
-        this.state.currentFrame === 1 ? frame2 :
-        frame3
+        this.state.currentFrame === 0 ? liveFrame1 :
+        this.state.currentFrame === 1 ? liveFrame2 :
+        liveFrame3
     } alt="Character Animation" />
 </div>
 
