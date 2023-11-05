@@ -120,6 +120,10 @@ export default class GamePage extends React.Component {
     window.location.reload()
   }
 
+  restartGame() {
+    window.location.reload()
+  }
+
   toggleStatMenu() {
 	this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
   }
@@ -560,6 +564,7 @@ export default class GamePage extends React.Component {
 			position: 'fixed',
 			bottom: 15,
 			marginLeft: 70,
+
 		};
 		
 		const ageTextAlign = {
@@ -601,7 +606,7 @@ export default class GamePage extends React.Component {
 			background: 'transparent',
 			border: 'none',
 		};
-		
+    
     return (
       <div>
 	  {/* Get Name */}
@@ -662,6 +667,9 @@ export default class GamePage extends React.Component {
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
 			  <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
               <button onClick={this.toggleGamble}>Gamble</button>	
+              <button onClick={this.toggleGamble}>Gamble</button>
+			  <br />
+			  <button onClick={this.toggleActivities}>Close</button>
               </>
               )}
               {/* buttons for 50+ */}
@@ -671,6 +679,10 @@ export default class GamePage extends React.Component {
 			  
 			  <br />
 			  <button onClick={this.toggleActivities}>Close</button>
+              <>
+              <button>Retire!</button>
+              </>
+              )}
             </div>
             {/* Gamble Menu */}
             {this.state.showGamble && (
