@@ -31,7 +31,7 @@ import stat from '../images/stats.png';
  */
 export default class GamePage extends React.Component {
     constructor(props) {
-      super(props);
+        super(props);
       //TIAA advice
       this.adviceArray = [
         'The sooner you begin saving and investing for retirement, the more time your money has to grow.',
@@ -55,36 +55,39 @@ export default class GamePage extends React.Component {
 
       ];
 
-      // character initial traits
-      this.state = {
-        age: 18,
-        balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
-        name: 'Your Name',
-		    realEstate: [[]],
-		    stocks: [],
-		    rothIRA: [],
-		    job: 'NONE',
-	  		income: 0,
-  			expenses: 0,
-        education: 'TEMPRORARY',
-        backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
-        newEventResponse: '',
-		showStatMenu: false,
-        interactionText: [],
-        showActivities: false,
-        showNameModal: true,
-        showGamble: false, 
+        // character initial traits
+        this.state = {
+            age: 18,
+            balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
+            name: 'Your Name',
+            realEstate: [],
+            realEstateIncome: 0,
+            stocks: [],
+            rothIRA: [],
+            job: 'NONE',
+            income: 0,
+            expenses: 0,
+            education: 'TEMPRORARY',
+            backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
+            newEventResponse: '',
+		        showStatMenu: false,
+            interactionText: [],
+            showActivities: false,
+            showNameModal: true,
+            showGamble: false, 
         showHousing: false,
-		    showNewEvent: false,
-		    showRealEstate: false,
-        gambleAmount: '', 
-        isBankrupt: false,
-        ownsHouse: false,
+    		        showNewEvent: false,
+		            showRealEstate: false,
+            gambleAmount: '', 
+            isBankrupt: false,
+            ownsHouse: false,
         ownsAppartment: false,
-        currentFrame: 0,
+            currentFrame: 0,
         showAdvice: false,
-        adviceText: ''
-      };
+        adviceText: '',
+            eventHistory: [],
+            headlineHistory: []
+        };
 
       
       
@@ -113,26 +116,25 @@ export default class GamePage extends React.Component {
     this.audio = new Audio(gamemusic);
   }
 
-  componentDidMount() {
-    this.checkAge()
-    this.audio.play(); // Play the music when the component mounts
-    this.frameInterval = setInterval(() => {
-        this.setState(prevState => ({
-          currentFrame: (prevState.currentFrame + 1) % 3, // cycle through 0, 1, 2
-        }));
-      }, 1000 / 3); // update the frame every third of a second
+    componentDidMount() {
+        this.checkAge()
+        this.audio.play(); // Play the music when the component mounts
+        this.frameInterval = setInterval(() => {
+            this.setState(prevState => ({
+                currentFrame: (prevState.currentFrame + 1) % 3, // cycle through 0, 1, 2
+            }));
+        }, 1000 / 3); // update the frame every third of a second
     }
-  
+    
+    componentWillUnmount() {
+        this.audio.pause(); // Pause the music when the component unmounts
+        clearInterval(this.frameInterval);
+    }
 
-  componentWillUnmount() {
-    this.audio.pause(); // Pause the music when the component unmounts
-    clearInterval(this.frameInterval);
-  }
-
-  // Handlers
-  handleChange(event) {
-    this.setState({ interactionText: event.target.value });
-  }
+    // Handlers
+    handleChange(event) {
+        this.setState({ interactionText: event.target.value });
+    }
 
   handleSubmit(event) {
     event.preventDefault();
@@ -151,32 +153,44 @@ export default class GamePage extends React.Component {
     this.setState(prevState => ({ showAdvice: !prevState.showAdvice }));
   }
 
-  increaseAge() {
-    this.setState(prevState => ({ age: prevState.age + 1 }));
-    this.updateConsole("You turned " + (this.state.age + 1) + "!");
-    this.checkAge();
-	this.toggleNewEvent();
-  }
+    increaseAge() {
+        this.setState(prevState => ({ age: prevState.age + 1 }));
+        this.updateConsole("You turned " + (this.state.age + 1) + "!");
+        this.checkAge();
+        const toSend = {
+            name: this.state.name,
+            rothIRA: this.state.rothIRA,
+            balance: this.state.balance,
+            job: this.state.job,
+            income: this.state.income,
+            stocks: this.state.stocks,
+            houseType: this.state.ownsHouse ? "house" : "",
+            education: this.state.education,
+            expenses: this.state.expenses,
+            stocks: this.state.stocks,
+            realEstate: this.state.realEstate,
+            realEstateIncome: this.state.realEstateIncome,
+            eventsHistory: this.state.eventsHistory,
+            headlineHistory: this.state.headlineHistory
+        }
+        this.toggleNewEvent();
+    }
 
-  restartGame() {
-    window.location.reload()
-  }
+    restartGame() {
+        window.location.reload()
+    }
 
-  restartGame() {
-    window.location.reload()
-  }
+    toggleStatMenu() {
+        this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
+    }
 
-  toggleStatMenu() {
-	this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
-  }
+    toggleActivities() {
+        this.setState(prevState => ({ showActivities: !prevState.showActivities }));
+    }
 
-  toggleActivities() {
-    this.setState(prevState => ({ showActivities: !prevState.showActivities }));
-  }
-
-  toggleGamble() {
-    this.setState(prevState => ({ showGamble: !prevState.showGamble }));
-  }
+    toggleGamble() {
+        this.setState(prevState => ({ showGamble: !prevState.showGamble }));
+    }
 
   toggleHousing() {
     this.setState(prevState => ({ showHousing: !prevState.showHousing }));
@@ -190,120 +204,122 @@ export default class GamePage extends React.Component {
     this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
   }
 	  
-  handleGambleChange(event) {
-    this.setState({ gambleAmount: event.target.value });
-  }
-
-  handleGambleSubmit(event) {
-    {/*For now it just subtracts amount gambled from character's balance */}
-    event.preventDefault();
-    const amount = parseFloat(this.state.gambleAmount);
-    const gains = (Math.random() * (amount * 1.25));
-    if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
-      this.setState(prevState => ({
-        balance: prevState.balance - amount + gains,
-        gambleAmount: '', //resets gamble amount
-        showGamble: false,
-      }), this.checkBankruptcy); // checks for bankruptcy after gambling
-      this.updateConsole("Your gamble of $" + amount + " adjusted your balance by " + (-amount + gains).toFixed(2) + "!");
-    } else {
-      alert('You cannot gamble that amount.');  //if they try to gamble more than they have
+    handleGambleChange(event) {
+        this.setState({ gambleAmount: event.target.value });
     }
-  }
+
+    handleGambleSubmit(event) {
+      {/*For now it just subtracts amount gambled from character's balance */}
+      event.preventDefault();
+      const amount = parseFloat(this.state.gambleAmount);
+      const gains = (Math.random() * (amount * 1.25));
+      if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
+        this.setState(prevState => ({
+          balance: prevState.balance - amount + gains,
+          gambleAmount: '', //resets gamble amount
+          showGamble: false,
+        }), this.checkBankruptcy); // checks for bankruptcy after gambling
+        this.updateConsole("Your gamble of $" + amount + " adjusted your balance by " + (-amount + gains).toFixed(2) + "!");
+      } else {
+        alert('You cannot gamble that amount.');  //if they try to gamble more than they have
+      }
+    }
   
-   handleRealEstate(event) {
-		{/*For now it just subtracts amount gambled from character's balance */}
-		event.preventDefault();
-		this.setState((prevState) => ({
-			realEstate: [...prevState.realEstate, ["Mansion",100]],
-			showRealEstate: false,
-			balance: prevState.balance - 100,
-		  }));
-	  }
+    handleRealEstate(event) {
+        event.preventDefault();
+        if(event.target.name == 'apartment') {
+            this.setState((prevState) => ({
+                realEstate: [...prevState.realEstate, "Apartment"],
+                realEstateIncome: prevState.realEstateIncome + 5000,
+                balance: prevState.balance - 50000
+            }), () => {this.updateConsole("You purchased an apartment!")});
+        } else {
+            this.setState((prevState) => ({
+                realEstate: [...prevState.realEstate, "House"],
+                realEstateIncome: prevState.realEstateIncome + 25000,
+                balance: prevState.balance - 500000
+            }), () => {this.updateConsole("You purchased a house!")});
+        }
+    }
 	  
-	 handleNewEvent(event) {
-		event.preventDefault();
-		const response = event.target.EventResponse.value;
-		if (response.trim()) {
-        this.setState({ EventResponse: response, showNewEvent: false });
-      } else {
-        alert('Please enter a valid name.');
+  	handleNewEvent(event) {
+        event.preventDefault();
+        const response = event.target.EventResponse.value;
+        if (response.trim()) {
+            this.setState({ EventResponse: response, showNewEvent: false });
+        } else {
+            alert('Please enter an input.');
+        }
+        this.updateConsole(response);                                                               //remove later
+    }
+
+    checkBankruptcy() {
+          if (this.state.balance <= 0.01) {
+              this.setState({ isBankrupt: true });
+          }
       }
-	  this.updateConsole(response);                                                               //remove later
+
+    checkAge() {
+        if (this.state.age < 22) {
+            liveFrame1 = frame1;
+            liveFrame2 = frame2;
+            liveFrame3 = frame3;
+        }
+        else if (this.state.age >= 22 && this.state.age < 35) {
+            liveFrame1 = frame4;
+            liveFrame2 = frame5;
+            liveFrame3 = frame6;
+        }
+        else if (this.state.age >= 35 && this.state.age < 50) {
+            liveFrame1 = frame7;
+            liveFrame2 = frame8;
+            liveFrame3 = frame9;
+        }
+        else if (this.state.age >= 65) {
+            liveFrame1 = frame10;
+            liveFrame2 = frame11;
+            liveFrame3 = frame12;
+        }
     }
 
-  checkBankruptcy() {
-    if (this.state.balance <= 0.01) {
-      this.setState({ isBankrupt: true });
-    }
-  }
-
-  checkAge() {
-    if (this.state.age < 22) {
-      liveFrame1 = frame1;
-      liveFrame2 = frame2;
-      liveFrame3 = frame3;
-      
-    }
-    else if (this.state.age >= 22 && this.state.age < 35) {
-      liveFrame1 = frame4;
-      liveFrame2 = frame5;
-      liveFrame3 = frame6;
-      
-    }
-    else if (this.state.age >= 35 && this.state.age < 50) {
-      liveFrame1 = frame7;
-      liveFrame2 = frame8;
-      liveFrame3 = frame9;
-      
-    }
-    else if (this.state.age >= 65) {
-      liveFrame1 = frame10;
-      liveFrame2 = frame11;
-      liveFrame3 = frame12;
-      
+    purchaseHouse() {
+        this.setState({
+            ownsHouse: true,
+            balance: this.state.balance - 1000,
+        }, () => {
+            if (this.state.balance < 0) {
+              this.checkBankruptcy();
+            }
+        });
     }
 
-  }
+    updateConsole(newMessage) {
+        this.setState(prevState => ({
+          interactionText: [...prevState.interactionText, newMessage]
+    }), () => {
+        const consoleElement = this.consoleRef.current;
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        });
+    }
 
-  purchaseHouse() {
-    this.setState({
-      ownsHouse: true,
-      balance: this.state.balance - 1000,
-    }, () => {
-      if (this.state.balance < 0) {
-        this.checkBankruptcy();
-      }
-    });
-  }
-
-  updateConsole(newMessage) {
-    this.setState(prevState => ({
-      interactionText: [...prevState.interactionText, newMessage]
-  }), () => {
-    const consoleElement = this.consoleRef.current;
-        consoleElement.scrollTop = consoleElement.scrollHeight;
-    });
-  }
-
-  clearConsole() {
-    this.setState({ interactionText: [] });
-  }
+    clearConsole() {
+        this.setState({ interactionText: [] });
+    }
   
-  removeLastMessage() {
-    this.setState(prevState => ({
-      interactionText: prevState.interactionText.slice(0, -1)
-    }));
-  }
+    removeLastMessage() {
+        this.setState(prevState => ({
+            interactionText: prevState.interactionText.slice(0, -1)
+        }));
+    }
 
-  handleNameSubmit(event) {
-    event.preventDefault();
-    const newName = event.target.name.value;
-    if (newName.trim()) {
-        this.setState({ name: newName, showNameModal: false, showStatMenu: true });
-      } else {
-        alert('Please enter a valid name.');
-      }
+    handleNameSubmit(event) {
+        event.preventDefault();
+        const newName = event.target.name.value;
+        if (newName.trim()) {
+            this.setState({ name: newName, showNameModal: false, showStatMenu: true });
+        } else {
+            alert('Please enter a valid name.');
+        }
     }
 
 	handleTIAA(event) {
@@ -321,93 +337,93 @@ export default class GamePage extends React.Component {
       borderBottom: '1px solid #ddd'
     };
 
-    const titleStyle = {
-      fontWeight: 'bold',
-      fontSize: '24px'
-    };
+      const titleStyle = {
+        fontWeight: 'bold',
+        fontSize: '24px'
+      };
 
-    const nameStyle = {
-      flex: 1,
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: '24px'
-    };
+      const nameStyle = {
+        flex: 1,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '24px'
+      };
 
-    const balanceStyle = {
-      textAlign: 'right',
-      fontSize: '14px',
-      paddingRight: '10px'
-    };
+      const balanceStyle = {
+        textAlign: 'right',
+        fontSize: '14px',
+        paddingRight: '10px'
+      };
 
-    const inputStyle = {
-      width: '70%',
-      padding: '40px',
-      fontSize: '16px',
-      margin: '20px 0'
-    };
+      const inputStyle = {
+        width: '70%',
+        padding: '40px',
+        fontSize: '16px',
+        margin: '20px 0'
+      };
 
-    const ageButtonStyle = {
-      backgroundColor: 'green',
-      color: 'white',
-      fontSize: '16px',
-      padding: '10px 20px',
-      margin: '10px',
-      border: 'none',
-      borderRadius: '100px',
-      cursor: 'pointer',
-      outline: 'none',
-      fontWeight: 'bold'
-    };
+      const ageButtonStyle = {
+        backgroundColor: 'green',
+        color: 'white',
+        fontSize: '16px',
+        padding: '10px 20px',
+        margin: '10px',
+        border: 'none',
+        borderRadius: '100px',
+        cursor: 'pointer',
+        outline: 'none',
+        fontWeight: 'bold'
+      };
 
-    const restartButtonStyle = {
-      backgroundColor: 'red',
-      color: 'white',
-      fontSize: '16px',
-      padding: '10px 20px',
-      margin: '10px',
-      border: 'none',
-      borderRadius: '100px',
-      cursor: 'pointer',
-      outline: 'none',
-      fontWeight: 'bold'
-    };
+      const restartButtonStyle = {
+        backgroundColor: 'red',
+        color: 'white',
+        fontSize: '16px',
+        padding: '10px 20px',
+        margin: '10px',
+        border: 'none',
+        borderRadius: '100px',
+        cursor: 'pointer',
+        outline: 'none',
+        fontWeight: 'bold'
+      };
 
-    const plusStyle = {
-      fontSize: '30px',
-      marginRight: '5px'
-    };
+      const plusStyle = {
+        fontSize: '30px',
+        marginRight: '5px'
+      };
 
-    const activitiesButtonStyle = {
-      backgroundColor: '#007bff',
-      color: 'white',
-      fontSize: '16px',
-      padding: '10px 20px',
-      margin: '10px',
-      border: 'none',
-      borderRadius: '100px',
-      cursor: 'pointer',
-      outline: 'none',
-      fontWeight: 'bold'
-    };
+      const activitiesButtonStyle = {
+        backgroundColor: '#007bff',
+        color: 'white',
+        fontSize: '16px',
+        padding: '10px 20px',
+        margin: '10px',
+        border: 'none',
+        borderRadius: '100px',
+        cursor: 'pointer',
+        outline: 'none',
+        fontWeight: 'bold'
+      };
 
-    const activitiesMenuStyle = {
-      display: this.state.showActivities ? 'flex' : 'none',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '50%',
-      maxHeight: '80%',
-      overflowY: 'auto',
-      backgroundColor: '#ADD8E6',
-      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-      padding: '20px',
-      zIndex: 1,
-      borderRadius: '10px'
-    };
+      const activitiesMenuStyle = {
+        display: this.state.showActivities ? 'flex' : 'none',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '50%',
+        maxHeight: '80%',
+        overflowY: 'auto',
+        backgroundColor: '#ADD8E6',
+        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        padding: '20px',
+        zIndex: 1,
+        borderRadius: '10px'
+      };
 
     const bottomButtonContainerStyle = {
       position: 'fixed',
@@ -475,51 +491,51 @@ export default class GamePage extends React.Component {
 		zIndex: 10,
     };
 
-    const bankruptContentStyle = {
-        padding: '20px',
-        backgroundColor: 'red',
-        color: 'white',
-        textAlign: 'center',
-        borderRadius: '10px',
-      };
-  
-    const bankruptButtonStyle = {
-		padding: '10px 20px',
-		fontSize: '16px',
-		color: 'white',
-		backgroundColor: 'black',
-		border: 'none',
-		borderRadius: '5px',
-		cursor: 'pointer',
-    };
-
-    const backgroundStyle = {
-        backgroundImage: `url(${this.state.ownsHouse ? background2 : background1})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        width: '100vw',
-        height: '100vh',
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        zIndex: '-1'
+      const bankruptContentStyle = {
+          padding: '20px',
+          backgroundColor: 'red',
+          color: 'white',
+          textAlign: 'center',
+          borderRadius: '10px',
+        };
+    
+      const bankruptButtonStyle = {
+      padding: '10px 20px',
+      fontSize: '16px',
+      color: 'white',
+      backgroundColor: 'black',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
       };
 
-      const nameModalStyle = {
-        display: this.state.showNameModal ? 'block' : 'none',
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '300px',
-        backgroundColor: '#FAB09C',
-        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-        padding: '300px',
-        zIndex: 3,
-        borderRadius: '10px'
-      };
+      const backgroundStyle = {
+          backgroundImage: `url(${this.state.ownsHouse ? background2 : background1})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          width: '100vw',
+          height: '100vh',
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          zIndex: '-1'
+        };
+
+        const nameModalStyle = {
+          display: this.state.showNameModal ? 'block' : 'none',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '300px',
+          backgroundColor: '#FAB09C',
+          boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+          padding: '300px',
+          zIndex: 3,
+          borderRadius: '10px'
+        };
 
       const statMenuStyle = {
         display: this.state.showStatMenu ? 'block' : 'none',
@@ -682,33 +698,33 @@ export default class GamePage extends React.Component {
         {/* Background image */}
         <div style={backgroundStyle}></div>
 
-        {/* Header section */}
-        <div style={headerStyle}>
-          {/* "SmartStart" on top left */}
-          <div style={titleStyle}>SmartStart</div>
+            {/* Header section */}
+            <div style={headerStyle}>
+                {/* "SmartStart" on top left */}
+                <div style={titleStyle}>SmartStart</div>
 
-          {/* Character's name on top middle */}
-          <div style={nameStyle}>{this.state.name}</div>
+                {/* Character's name on top middle */}
+                <div style={nameStyle}>{this.state.name}</div>
 
-          {/* age & balance on top right */}
-          <div style={balanceStyle}>
-            Age: {this.state.age} | Balance: ${this.state.balance.toFixed(2)}
+                {/* age & balance on top right */}
+                <div style={balanceStyle}>
+                  Age: {this.state.age} | Balance: ${this.state.balance.toFixed(2)}
+                </div>
           </div>
-        </div>
 
-        {/* Middle of screen*/}
-        <div style={{ paddingTop: '60px', paddingBottom: '80px', textAlign: 'center' }}>
-            {/* Console */}
-            <textarea
-            readOnly
-            ref={this.consoleRef}
-            style={inputStyle}
-            value={this.state.interactionText.join('\n')}
-            placeholder={"Your adult life begins..."}
-            />
-            
-            {/* Activities Menu */}
-            <div style={activitiesMenuStyle}>
+          {/* Middle of screen*/}
+          <div style={{ paddingTop: '60px', paddingBottom: '80px', textAlign: 'center' }}>
+              {/* Console */}
+              <textarea
+              readOnly
+              ref={this.consoleRef}
+              style={inputStyle}
+              value={this.state.interactionText.join('\n')}
+              placeholder={"Your adult life begins..."}
+              />
+              
+              {/* Activities Menu */}
+              <div style={activitiesMenuStyle}>
               {/* buttons for 18+*/}
               <button>Apply for Job</button>
               <button>Stock Market</button>
@@ -719,7 +735,9 @@ export default class GamePage extends React.Component {
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
               <>
-              <button onClick={this.toggleHousing}>Purchase House</button>
+              <button onClick={() => this.purchaseHouse()}>Purchase House</button>
+          <button onClick={this.toggleHousing}>Purchase House</button>
+          <button onClick={this.toggleHousing}>Purchase House</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
               </>
               )}
@@ -803,41 +821,40 @@ export default class GamePage extends React.Component {
             <button type="button" onClick={this.toggleTIAAAdvice}>Cool!</button>
           </div>
         )}
-			{/* New Event Response*/}
-			{this.state.showNewEvent && (
-			<div style={newEventStyle}>
-				<form onSubmit={this.handleNewEvent}>
-					<p>Lorem ipsum</ p>
-					<input type="text" name="EventResponse" required />
-				<button type="submit" >Submit</button>
-				</form>
-			</div>
-			)}
+        {/* New Event Response*/}
+        {this.state.showNewEvent && (
+        <div style={newEventStyle}>
+          <form onSubmit={this.handleNewEvent}>
+            <p>Lorem ipsum</ p>
+            <input type="text" name="EventResponse" required />
+          <button type="submit" >Submit</button>
+          </form>
         </div>
-        {/* bottom of screen */}
+        )}
+          </div>
+          {/* bottom of screen */}
         <div style={bottomButtonContainerStyle}>
-		
-			<img src={heart} style={ageImageStyle} alt='Age image' />
-			<h1 style={ageTextAlign}>{this.state.age}</ h1>
-			<img src={job} style={jobImageStyle} alt='job image' />
-			<h1 style={jobTextAlign}>{this.state.job}</ h1>
-			
-			<img src={arrowup} style={incomeImageStyle} alt='income image' />
-			<h1 style={incomeTextAlign}>{this.state.income}</ h1>
-			<img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
-			<h1 style={expensesTextAlign}>-${this.state.expenses}</ h1>
-		  
-		  {/* Restart Game Button*/}
-                <button onClick={this.restartGame} style={restartButtonStyle} type="button">
-                  Restart Game
-                </button>
+      
+        <img src={heart} style={ageImageStyle} alt='Age image' />
+        <h1 style={ageTextAlign}>{this.state.age}</ h1>
+        <img src={job} style={jobImageStyle} alt='job image' />
+        <h1 style={jobTextAlign}>{this.state.job}</ h1>
+        
+        <img src={arrowup} style={incomeImageStyle} alt='income image' />
+        <h1 style={incomeTextAlign}>+${this.state.income}</ h1>
+        <img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
+        <h1 style={expensesTextAlign}>-${this.state.expenses}</ h1>
+        <h1 style={expensesTextAlign}>{this.state.expenses}</ h1>
+            {/* Restart Game Button*/}
+                  <button onClick={this.restartGame} style={restartButtonStyle} type="button">
+                    Restart Game
+                  </button>
+            {/* Increment Age Button*/}
+            <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
+              <span style={plusStyle}>+ </span>Age
+            </button>
 
-          {/* Increment Age Button*/}
-          <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
-            <span style={plusStyle}>+ </span>Age
-          </button>
-
-          
+            
 
           {/* Activities Button */}
           <button
@@ -866,21 +883,21 @@ export default class GamePage extends React.Component {
     }  alt="Character Animation" />
 </div>
 
-    {/* out of money (bankruptcy) */}
-    {this.state.isBankrupt && (
-      <div style={bankruptModalStyle}>
-        <div style={bankruptContentStyle}>
-          <h2>You ran out of money!</h2>
-          <button
-            style={bankruptButtonStyle}
-            onClick={() => window.location.reload()}
-          >
-            Restart
-          </button>
+      {/* out of money (bankruptcy) */}
+      {this.state.isBankrupt && (
+        <div style={bankruptModalStyle}>
+          <div style={bankruptContentStyle}>
+            <h2>You ran out of money!</h2>
+            <button
+              style={bankruptButtonStyle}
+              onClick={() => window.location.reload()}
+            >
+              Restart
+            </button>
+          </div>
         </div>
-      </div>
-    )}
-      </div>
-    );
-  }
+      )}
+        </div>
+      );
+    }
 }
