@@ -38,8 +38,8 @@ export default class GamePage extends React.Component {
 		    stocks: [],
 		    rothIRA: [],
 		    job: 'NONE',
-			income: 0,
-			expenses: 0,
+	  		income: 0,
+  			expenses: 0,
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
         showStatMenu: false,
@@ -70,12 +70,14 @@ export default class GamePage extends React.Component {
     this.purchaseHouse = this.purchaseHouse.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.toggleStatMenu = this.toggleStatMenu.bind(this);
+    this.consoleRef = React.createRef();
     
     //music
     this.audio = new Audio(gamemusic);
   }
 
   componentDidMount() {
+    this.checkAge()
     this.audio.play(); // Play the music when the component mounts
     this.frameInterval = setInterval(() => {
         this.setState(prevState => ({
@@ -200,7 +202,10 @@ export default class GamePage extends React.Component {
   updateConsole(newMessage) {
     this.setState(prevState => ({
       interactionText: [...prevState.interactionText, newMessage]
-    }));
+  }), () => {
+    const consoleElement = this.consoleRef.current;
+        consoleElement.scrollTop = consoleElement.scrollHeight;
+    });
   }
 
   clearConsole() {
@@ -256,7 +261,7 @@ export default class GamePage extends React.Component {
 
     const inputStyle = {
       width: '70%',
-      padding: '10px',
+      padding: '40px',
       fontSize: '16px',
       margin: '20px 0'
     };
@@ -402,9 +407,9 @@ export default class GamePage extends React.Component {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '300px',
-        backgroundColor: '#2596be',
+        backgroundColor: '#FAB09C',
         boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-        padding: '20px',
+        padding: '300px',
         zIndex: 3,
         borderRadius: '10px'
       };
@@ -422,7 +427,6 @@ export default class GamePage extends React.Component {
         zIndex: 2,
         borderRadius: '10px',
         //align: 'right'
-
       };
       
       const animationContainerStyle = {
@@ -537,6 +541,7 @@ export default class GamePage extends React.Component {
             {/* Console */}
             <textarea
             readOnly
+            ref={this.consoleRef}
             style={inputStyle}
             value={this.state.interactionText.join('\n')}
             placeholder={"Your adult life begins..."}
