@@ -18,6 +18,9 @@ export default class GamePage extends React.Component {
 		stocks: [],
 		rothIRA: [],
 		job: '',
+        education: 'TEMPRORARY',
+        backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
+        showStatMenu: false,
         interactionText: [],
         showActivities: false,
         showNameModal: true,
@@ -43,6 +46,7 @@ export default class GamePage extends React.Component {
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
+    this.toggleStatMenu = this.toggleStatMenu.bind(this);
     
     //music
     this.audio = new Audio(gamemusic);
@@ -68,6 +72,10 @@ export default class GamePage extends React.Component {
   increaseAge() {
     this.setState(prevState => ({ age: prevState.age + 1 }));
     this.updateConsole("You turned " + (this.state.age + 1) + "!");
+  }
+
+  toggleStatMenu() {
+	this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
   }
 
   toggleActivities() {
@@ -150,11 +158,13 @@ export default class GamePage extends React.Component {
     event.preventDefault();
     const newName = event.target.name.value;
     if (newName.trim()) {
-        this.setState({ name: newName, showNameModal: false });
+        this.setState({ name: newName, showNameModal: false, showStatMenu: true });
       } else {
         alert('Please enter a valid name.');
       }
     }
+
+
 
   //styling elements
   render() {
@@ -340,6 +350,21 @@ export default class GamePage extends React.Component {
         borderRadius: '10px'
       };
 
+      const statMenuStyle = {
+        display: this.state.showStatMenu ? 'block' : 'none',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        padding: '20px',
+        zIndex: 2,
+        borderRadius: '10px',
+        //align: 'right'
+      };
+
 
     return (
       <div>
@@ -423,6 +448,23 @@ export default class GamePage extends React.Component {
 				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
 				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
+					</form>
+				</div>
+				)}
+                {this.state.showStatMenu && (
+				<div style={statMenuStyle}>
+					<form onSubmit={this.handleRealEstate}>
+					<label>
+					Age: {this.state.age}
+					<br />
+					Balance: ${this.state.balance.toFixed(2)}
+					<br />
+					Education: {this.state.education}
+					<br />
+					Background: {this.state.backgroundInfo}
+					<br />
+					</label>
+					<button type="button" onClick={this.toggleStatMenu}>Close</button>
 					</form>
 				</div>
 				)}
