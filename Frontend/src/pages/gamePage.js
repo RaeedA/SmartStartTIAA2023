@@ -414,7 +414,7 @@ export default class GamePage extends React.Component {
     }
 
 	handleTIAA(event) {
-		this.updateConsole("-Who are you?- Yu.- No, not me. You.- Yes, I am Yu.Just answer the damn questions.- Who are you?- I have told you.- Are you deaf?- No, Yu is blind.I'm not blind, you blind.- That is what I just said. You just said what?- I did not say what, I said Yu.- That's what I'm asking you.- And Yu is answering.- Shut up!");
+		this.toggleTIAAAdvice();
 	}
 
   //styling elements
