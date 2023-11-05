@@ -170,7 +170,7 @@ export default class GamePage extends React.Component {
   }
 
     increaseAge() {
-        this.setState(prevState => ({ age: prevState.age + 20 }), () => {
+        this.setState(prevState => ({ age: prevState.age + 1 }), () => {
             this.updateConsole("Aging Up...")
             this.checkAge();
             const toSend = {
@@ -290,7 +290,7 @@ export default class GamePage extends React.Component {
     handleRothIRASubmit(event) {
       event.preventDefault();
       const deposit = parseFloat(this.state.depositAmount);
-      const inRothIRA = this.state.inRothIRA + deposit;
+      const inRothIRA = this.state.rothIRA + deposit;
       if (!isNaN(deposit) && deposit > 0 && deposit <= (this.state.balance + .01)) {
         this.setState(prevState => ({
           balance: prevState.balance - deposit,
@@ -298,7 +298,7 @@ export default class GamePage extends React.Component {
           rothIRA: prevState.rothIRA + deposit,
           showRothIRA: false,
       }), this.checkBankruptcy);
-      this.updateConsole("In 10 years, your money in RothIRA of $" + inRothIRA + " will grow to $" + (inRothIRA * (1.15 ** 10)).toFixed(2) + " with an annual interest of 15%!");
+      this.updateConsole("In 10 years, your money in RothIRA of $" + inRothIRA + " will grow to about $" + (inRothIRA * 2).toFixed(2) + " with an annual interest of 7.5%!");
       } else {
         alert('You cannot deposit that amount.');
       }
