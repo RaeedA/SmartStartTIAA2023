@@ -107,6 +107,10 @@ export default class GamePage extends React.Component {
     this.checkAge();
   }
 
+  restartGame() {
+    window.location.reload()
+  }
+
   toggleStatMenu() {
 	this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
   }
@@ -268,6 +272,19 @@ export default class GamePage extends React.Component {
 
     const ageButtonStyle = {
       backgroundColor: 'green',
+      color: 'white',
+      fontSize: '16px',
+      padding: '10px 20px',
+      margin: '10px',
+      border: 'none',
+      borderRadius: '100px',
+      cursor: 'pointer',
+      outline: 'none',
+      fontWeight: 'bold'
+    };
+
+    const restartButtonStyle = {
+      backgroundColor: 'red',
       color: 'white',
       fontSize: '16px',
       padding: '10px 20px',
@@ -618,11 +635,17 @@ export default class GamePage extends React.Component {
 			<h1 style={incomeTextAlign}>{this.state.income}</ h1>
 			<img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
 			<h1 style={expensesTextAlign}>{this.state.expenses}</ h1>
-		
+          {/* Restart Game Button*/}
+                <button onClick={this.restartGame} style={restartButtonStyle} type="button">
+                  Restart Game
+                </button>
+
           {/* Increment Age Button*/}
           <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
             <span style={plusStyle}>+ </span>Age
           </button>
+
+          
 
           {/* Activities Button */}
           <button
