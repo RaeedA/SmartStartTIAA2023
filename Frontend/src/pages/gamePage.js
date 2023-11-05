@@ -14,6 +14,8 @@ export default class GamePage extends React.Component {
         age: 18,
         balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
         name: 'First Last',
+		education: 'TEMPRORARY',
+		backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
 		realEstate: [[]],
 		stocks: [],
 		rothIRA: [],
@@ -21,6 +23,8 @@ export default class GamePage extends React.Component {
         interactionText: [],
         showActivities: false,
         showGamble: false, 
+		showRealEstate: false,
+		showStatMenu: true,
         gambleAmount: '', 
         isBankrupt: false,
         ownsHouse: false
@@ -41,6 +45,8 @@ export default class GamePage extends React.Component {
 	this.handleRealEstate = this.handleRealEstate.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
+	
+	this.toggleStatMenu = this.toggleStatMenu.bind(this);
     
     //music
     this.audio = new Audio(gamemusic);
@@ -65,7 +71,7 @@ export default class GamePage extends React.Component {
 
   increaseAge() {
     this.setState(prevState => ({ age: prevState.age + 1 }));
-    this.updateConsole("You turned " + (this.state.age + 1) + "!");
+    this.updateConsole("You turned " + this.state.age + "!");
   }
 
   toggleActivities() {
@@ -75,11 +81,14 @@ export default class GamePage extends React.Component {
   toggleGamble() {
     this.setState(prevState => ({ showGamble: !prevState.showGamble }));
   }
-
-	toggleRealEstate() {
-		this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
-	  }
-	  
+  
+  toggleRealEstate() {
+	this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
+  }
+  
+  toggleStatMenu() {
+	this.setState(prevState => ({ showStatMenu: !prevState.showStatMenu })); 
+  }
   handleGambleChange(event) {
     this.setState({ gambleAmount: event.target.value });
   }
@@ -109,6 +118,7 @@ export default class GamePage extends React.Component {
 			showRealEstate: false,
 			balance: prevState.balance - 100,
 		  }));
+		this.updateConsole("You bought a mansion worth $100!!");
 	  }
 
   checkBankruptcy() {
@@ -268,6 +278,21 @@ export default class GamePage extends React.Component {
 			zIndex: 2,
 			borderRadius: '10px'
 		  };
+		  
+	const statMenuStyle = {
+			display: this.state.showStatMenu ? 'block' : 'none',
+			position: 'fixed',
+			top: '50%',
+			left: '50%',
+			transform: 'translate(-50%, -50%)',
+			width: '300px',
+			backgroundColor: '#ffffff',
+			boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+			padding: '20px',
+			zIndex: 2,
+			borderRadius: '10px',
+			//align: 'right'
+		  };
 	  
     const bankruptModalStyle = {
     position: 'fixed',
@@ -341,7 +366,7 @@ export default class GamePage extends React.Component {
             readOnly
             style={inputStyle}
             value={this.state.interactionText.join('\n')}
-            placeholder={"Your adult life begins..."}
+            placeholder={`What's your next move at age ${this.state.age}?`}
             />
             
             {/* Activities Menu */}
@@ -382,6 +407,23 @@ export default class GamePage extends React.Component {
 				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
 				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
+					</form>
+				</div>
+				)}
+			{this.state.showStatMenu && (
+				<div style={statMenuStyle}>
+					<form onSubmit={this.handleRealEstate}>
+					<label>
+					Age: {this.state.age}
+					<br />
+					Balance: {this.state.balance.toFixed(2)}
+					<br />
+					Education: {this.state.education}
+					<br />
+					Background: {this.state.backgroundInfo}
+					<br />
+					</label>
+					<button type="button" onClick={this.toggleStatMenu}>Close</button>
 					</form>
 				</div>
 				)}
