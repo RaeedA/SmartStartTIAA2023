@@ -760,9 +760,7 @@ export default class GamePage extends React.Component {
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
               <>
-              <button onClick={() => this.purchaseHouse()}>Purchase House</button>
-          <button onClick={this.toggleHousing}>Purchase House</button>
-          <button onClick={this.toggleHousing}>Purchase House</button>
+              <button onClick={() => this.purchaseHouse()}>Purchase Apartment (10k, 4k/Year Living Expenses)</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
               </>
               )}
@@ -799,9 +797,8 @@ export default class GamePage extends React.Component {
 			{this.state.showRealEstate && (
 				<div style={realEstateMenuStyle}>
 					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button><br />
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button><br />
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button><br />
+				  <button name = "apartment" onClick={this.handleRealEstate}>Apartment for $50k, Earns 5k/Year</button><br />
+				  <button name = "house" onClick={this.handleRealEstate}>House for 500k, Earns 25k/Year </button><br />
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
 					</form>
 				</div>
