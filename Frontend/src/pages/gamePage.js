@@ -297,7 +297,7 @@ export default class GamePage extends React.Component {
           depositAmount: '',
           showRothIRA: false,
       }), this.checkBankruptcy);
-      this.updateConsole("In 10 years, your money in RothIRA of $" + inRothIRA + " will grow to $" + (inRothIRA * (1.15 ** 10)).toFixed(2) + " with an annual interest of 15%!");
+      this.updateConsole("In 10 years, your money in RothIRA of $" + inRothIRA + " will grow to about $" + (inRothIRA * 2).toFixed(2) + " with an annual interest of 7.5%!");
       } else {
         alert('You cannot deposit that amount.');
       }
