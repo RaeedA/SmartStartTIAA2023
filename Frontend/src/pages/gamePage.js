@@ -24,6 +24,7 @@ import arrowup from '../images/arrowup.png';
 import coin from '../images/coin.png';
 import TIAA from '../images/TIAA.png';
 import stat from '../images/stats.png';
+import { CallAPI } from "../util";
 
 //import TIAA from '../images/TIAA.png';
 /**
@@ -70,6 +71,7 @@ export default class GamePage extends React.Component {
             education: 'TEMPRORARY',
             backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
             newEventResponse: '',
+            newEventInfo: '',
 		        showStatMenu: false,
             interactionText: [],
             showActivities: false,
@@ -84,17 +86,16 @@ export default class GamePage extends React.Component {
             gambleAmount: '', 
             isBankrupt: false,
             ownsHouse: false,
-        ownsAppartment: false,
+            ownsAppartment: false,
             currentFrame: 0,
-        showAdvice: false,
-        adviceText: '',
-            eventHistory: [],
+            showAdvice: false,
+            adviceText: '',
+            eventsHistory: [],
             headlineHistory: []
         };
 
       
-      
-
+    
     // Bindings
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -118,6 +119,9 @@ export default class GamePage extends React.Component {
 	  this.handleTIAA = this.handleTIAA.bind(this);
     this.handleNewEvent = this.handleNewEvent.bind(this);
 	  this.toggleNewEvent = this.toggleNewEvent.bind(this);
+    this.updateUserProfile = this.updateUserProfile.bind(this);
+    this.handleRetire = this.handleRetire.bind(this);
+
     //music
     this.audio = new Audio(gamemusic);
   }
@@ -146,6 +150,12 @@ export default class GamePage extends React.Component {
     event.preventDefault();
   }
 
+  handleRetire(event) {
+    CallAPI("retire", this.state).then((response) => {
+      // @TODO PRINT OUT RESPONSE FOR THE PLAYER
+    })
+  }
+
   toggleTIAAAdvice() {
     if (!this.state.showAdvice) {
       // If we are about to show the advice, pick a random advice string
@@ -160,26 +170,63 @@ export default class GamePage extends React.Component {
   }
 
     increaseAge() {
-        this.setState(prevState => ({ age: prevState.age + 1 }));
-        this.updateConsole("You turned " + (this.state.age + 1) + "!");
-        this.checkAge();
-        const toSend = {
-            name: this.state.name,
-            rothIRA: this.state.rothIRA,
-            balance: this.state.balance,
-            job: this.state.job,
-            income: this.state.income,
-            stocks: this.state.stocks,
-            houseType: this.state.ownsHouse ? "house" : "",
-            education: this.state.education,
-            expenses: this.state.expenses,
-            stocks: this.state.stocks,
-            realEstate: this.state.realEstate,
-            realEstateIncome: this.state.realEstateIncome,
-            eventsHistory: this.state.eventsHistory,
-            headlineHistory: this.state.headlineHistory
+        this.setState(prevState => ({ age: prevState.age + 1 }), () => {
+            this.updateConsole("Aging Up...")
+            this.checkAge();
+            const toSend = {
+                name: this.state.name,
+                age: this.state.age,
+                rothIRA: this.state.rothIRA,
+                balance: this.state.balance,
+                job: this.state.job,
+                income: this.state.income,
+                stocks: this.state.stocks,
+                houseType: this.state.ownsHouse ? "house" : "",
+                education: this.state.education,
+                expenses: this.state.expenses,
+                stocks: this.state.stocks,
+                realEstate: this.state.realEstate,
+                realEstateIncome: this.state.realEstateIncome,
+                eventsHistory: this.state.eventsHistory,
+                headlineHistory: this.state.headlineHistory
+            }
+            CallAPI("newYear", toSend).then((response) => {
+                this.setState(() => ({
+                    balance: response.balance,
+                    stocks: response.stocks,
+                    eventsHistory: response.eventsHistory,
+                    headlineHistory: response.headlineHistory,
+                    newEventInfo: response.eventsHistory[response.eventsHistory.length-1].content
+                }), () => {
+                    this.removeLastMessage()
+                    this.updateConsole(this.state.newEventInfo)
+                    this.toggleNewEvent();
+                })
+            })
+        })
+    }
+
+    updateUserProfile() {
+        var content = this.state.name + ' is now ' + this.state.age + ' years old, and '
+        if(this.state.job != 'NONE') {
+            content += 'has been holding a job as a ' + this.state.job + ' making $' + this.state.income.toFixed(2) + ' a year.'
+        } else {
+            content += 'is currently unemployed.'
         }
-        this.toggleNewEvent();
+        if(this.state.education == "temporary") {
+            content += ' They are currently attending college.'
+        }
+        if(this.state.ownsHouse) {
+            content += ' They currently live in a house.'
+        } else {
+            content += ' They are currently living at their parent\'s house.'
+        }
+        content += ' They currently have $' + this.state.balance.toFixed(2) + ' in their bank account. They own '
+        content +=  this.state.realEstate.length + ' rental properties giving them $' + this.state.realEstateIncome + ' a year.'
+        console.log(content)
+        this.setState(() => ({
+            backgroundInfo: content
+        }))
     }
 
     restartGame() {
@@ -276,13 +323,24 @@ export default class GamePage extends React.Component {
 	  
   	handleNewEvent(event) {
         event.preventDefault();
-        const response = event.target.EventResponse.value;
-        if (response.trim()) {
-            this.setState({ EventResponse: response, showNewEvent: false });
+        const userResponse = event.target.EventResponse.value;
+        if (userResponse.trim()) {
+            CallAPI("finishEvent", {balance: this.state.balance, message: userResponse, history: this.state.eventsHistory}).then((response) => {
+                this.updateConsole(userResponse)
+                this.setState(() => ({
+                    eventHistory: response.history,
+                    newEventInfo: response.history[response.history.length-1].content,
+                    balance: response.balance
+                }), () => {
+                    this.updateConsole(this.state.newEventInfo);
+                    this.updateConsole("You turned " + (this.state.age) + "!");
+                    this.updateUserProfile();
+                    this.setState({showNewEvent: false})
+                })
+            })
         } else {
             alert('Please enter an input.');
         }
-        this.updateConsole(response);                                                               //remove later
     }
 
     checkBankruptcy() {
@@ -317,7 +375,8 @@ export default class GamePage extends React.Component {
     purchaseHouse() {
         this.setState({
             ownsHouse: true,
-            balance: this.state.balance - 1000,
+            balance: this.state.balance - 10000,
+            expenses: 4000
         }, () => {
             if (this.state.balance < 0) {
               this.checkBankruptcy();
@@ -348,7 +407,7 @@ export default class GamePage extends React.Component {
         event.preventDefault();
         const newName = event.target.name.value;
         if (newName.trim()) {
-            this.setState({ name: newName, showNameModal: false, showStatMenu: true });
+            this.setState({ name: newName, showNameModal: false, showStatMenu: false }, this.updateUserProfile);
         } else {
             alert('Please enter a valid name.');
         }
@@ -781,16 +840,14 @@ export default class GamePage extends React.Component {
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
               <>
-              <button onClick={() => this.purchaseHouse()}>Purchase House</button>
-          <button onClick={this.toggleHousing}>Purchase House</button>
-          <button onClick={this.toggleHousing}>Purchase House</button>
+              <button onClick={() => this.purchaseHouse()}>Purchase Apartment (10k, 4k/Year Living Expenses)</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
               </>
               )}
               {/* buttons for 50+ */}
               {this.state.age >=  50 && (
               <>
-              <button>Retire!</button>
+              <button onClick={this.handleRetire} >Retire!</button>
               </>
               )}
 			      <button onClick={this.toggleActivities}>Close</button>
@@ -843,9 +900,8 @@ export default class GamePage extends React.Component {
 			{this.state.showRealEstate && (
 				<div style={realEstateMenuStyle}>
 					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button><br />
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button><br />
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button><br />
+				  <button name = "apartment" onClick={this.handleRealEstate}>Apartment for $50k, Earns 5k/Year</button><br />
+				  <button name = "house" onClick={this.handleRealEstate}>House for 500k, Earns 25k/Year </button><br />
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
 					</form>
 				</div>
@@ -855,13 +911,7 @@ export default class GamePage extends React.Component {
             {this.state.showStatMenu && (
 			<div style={statMenuStyle}>
 				<label>
-					Age: {this.state.age}
-					<br />
-					Balance: ${this.state.balance.toFixed(2)}
-					<br />
-					Education: {this.state.education}
-					<br />
-					Background: {this.state.backgroundInfo}
+					{this.state.backgroundInfo}
 					<br />
 					</label>
 					<button type="button" onClick={this.toggleStatMenu}>Close</button>
@@ -895,7 +945,7 @@ export default class GamePage extends React.Component {
         {this.state.showNewEvent && (
         <div style={newEventStyle}>
           <form onSubmit={this.handleNewEvent}>
-            <p>Lorem ipsum</ p>
+            <p>{this.state.newEventInfo}</ p>
             <input type="text" name="EventResponse" required />
           <button type="submit" >Submit</button>
           </form>

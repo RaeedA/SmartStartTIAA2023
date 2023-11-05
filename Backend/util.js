@@ -26,7 +26,7 @@ async function chatWithGPT(messageList, functions = [], callback = null) {
                 name: functionCall.name,
                 content: callback([functionCall.name, JSON.parse(functionCall.arguments)])
             })
-            await chatWithGPT(messageList);
+            return await chatWithGPT(messageList);
         } else {
             return GPTOutput.choices[0].message
         }
