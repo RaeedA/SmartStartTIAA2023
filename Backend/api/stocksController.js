@@ -1,4 +1,4 @@
-const { finishController, chatWithGPT } = require("../util")
+const { chatWithGPT } = require("../util")
 
 async function stocks(market, headlines) {
     chatHistory = []
@@ -44,7 +44,7 @@ async function stocks(market, headlines) {
         }
     })
     //finishController(res, {message: headline});
-    return headline;
+    return market;
 };
 
 module.exports = {stocks}
