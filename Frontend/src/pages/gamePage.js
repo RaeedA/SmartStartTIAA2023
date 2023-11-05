@@ -303,6 +303,7 @@ export default class GamePage extends React.Component {
                     this.updateConsole(this.state.newEventInfo);
                     this.updateConsole("You turned " + (this.state.age) + "!");
                     this.updateUserProfile();
+                    this.setState({showNewEvent: false})
                 })
             })
         } else {
