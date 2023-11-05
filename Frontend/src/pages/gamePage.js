@@ -31,7 +31,6 @@ import stat from '../images/stats.png';
  */
 export default class GamePage extends React.Component {
     constructor(props) {
-
         super(props);
       //TIAA advice
       this.adviceArray = [
@@ -79,9 +78,6 @@ export default class GamePage extends React.Component {
         showHousing: false,
     		        showNewEvent: false,
 		            showRealEstate: false,
-            showRothIRA: false,
-            depositAmount: '',
-            inRothIRA: '',
             gambleAmount: '', 
             isBankrupt: false,
             ownsHouse: false,
@@ -103,12 +99,9 @@ export default class GamePage extends React.Component {
     this.toggleActivities = this.toggleActivities.bind(this);
     this.toggleGamble = this.toggleGamble.bind(this);
 	  this.toggleRealEstate = this.toggleRealEstate.bind(this);
-    this.toggleRothIRA = this.toggleRothIRA.bind(this);
     this.handleGambleChange = this.handleGambleChange.bind(this);
     this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
 	  this.handleRealEstate = this.handleRealEstate.bind(this);
-    this.handleRothIRAChange = this.handleRothIRAChange.bind(this);
-    this.handleRothIRASubmit = this.handleRothIRASubmit.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
@@ -205,71 +198,14 @@ export default class GamePage extends React.Component {
 
 	toggleRealEstate() {
 		this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
-	}
+	  }
 	  
-
-  toggleRothIRA() {
-    this.setState(prevState => ({showRothIRA: !prevState.showRothIRA }));
-  }
-
-  handleRothIRAChange(event) {
-    this.setState({ depositAmount: event.target.value });
-  }
-  
- toggleNewEvent() {
+	toggleNewEvent() {
     this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
   }
 	  
- handleGambleChange(event) {
-    this.setState({ gambleAmount: event.target.value });
- }
-
-  handleGambleSubmit(event) {
-    {/*For now it just subtracts amount gambled from character's balance */}
-    event.preventDefault();
-    const amount = parseFloat(this.state.gambleAmount);
-    const gains = (Math.random() * (amount * 1.25));
-    if (!isNaN(amount) && amount > 0 && amount <= (this.state.balance + .01)) {
-      this.setState(prevState => ({
-        balance: prevState.balance - amount + gains,
-        gambleAmount: '', //resets gamble amount
-        showGamble: false,
-      }), this.checkBankruptcy); // checks for bankruptcy after gambling
-      this.updateConsole("Your gamble of $" + amount + " adjusted your balance by " + (-amount + gains).toFixed(2) + "!");
-    } else {
-      alert('You cannot gamble that amount.');  //if they try to gamble more than they have
-    }
-  }
-  
-  handleRothIRASubmit(event) {
-    event.preventDefault();
-    const deposit = parseFloat(this.state.depositAmount);
-    const inRothIRA = this.state.inRothIRA + deposit;
-    if (!isNaN(deposit) && deposit > 0 && deposit <= (this.state.balance + .01)) {
-      this.setState(prevState => ({
-        balance: prevState.balance - deposit,
-        depositAmount: '',
-        showRothIRA: false,
-      }), this.checkBankruptcy);
-      this.updateConsole("In 10 years, your money in RothIRA of $" + inRothIRA + " will grow to $" + inRothIRA * (1.15 ** 10) + " with an annual interest of 15%!");
-    } else {
-      alert('You cannot deposit that amount.');
-    }
-  }
-  
-   handleRealEstate(event) {
-		{/*For now it just subtracts amount gambled from character's balance */}
-		event.preventDefault();
-		this.setState((prevState) => ({
-			realEstate: [...prevState.realEstate, ["Mansion",100]],
-			showRealEstate: false,
-			balance: prevState.balance - 100,
-		  }));
-	  }
-
-  checkBankruptcy() {
-    if (this.state.balance <= 0.01) {
-      this.setState({ isBankrupt: true });
+    handleGambleChange(event) {
+        this.setState({ gambleAmount: event.target.value });
     }
 
     handleGambleSubmit(event) {
@@ -513,20 +449,6 @@ export default class GamePage extends React.Component {
         zIndex: 2,
         borderRadius: '10px'
       };
-
-    const RothIRAMenuStyle = {
-      display: this.state.showRothIRA ? 'block' : 'none',
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '300px',
-      backgroundColor: '#ffffff',
-      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-      padding: '20px',
-      zIndex: 2,
-      borderRadius: '10px'
-    };
 	  
 	const realEstateMenuStyle = {
 		display: this.state.showRealEstate ? 'block' : 'none',
@@ -807,9 +729,8 @@ export default class GamePage extends React.Component {
               <button>Apply for Job</button>
               <button>Stock Market</button>
               <button onClick={this.toggleGamble}>Gamble</button>
-              <button onClick={this.toggleRothIRA}>Roth IRA</button>
+              <button>Roth IRA</button>
               <button onClick={this.toggleTIAAAdvice}>Get TIAA Advice</button>
-
               
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
@@ -818,7 +739,6 @@ export default class GamePage extends React.Component {
           <button onClick={this.toggleHousing}>Purchase House</button>
           <button onClick={this.toggleHousing}>Purchase House</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
-
               </>
               )}
               {/* buttons for 50+ */}
@@ -828,7 +748,6 @@ export default class GamePage extends React.Component {
               </>
               )}
 			      <button onClick={this.toggleActivities}>Close</button>
-
             </div>
             {/* Gamble Menu */}
             {this.state.showGamble && (
@@ -862,43 +781,10 @@ export default class GamePage extends React.Component {
 					</form>
 				</div>
 				)}
-
-          {/* RothIRA Menu */}
-          {this.state.showRothIRA && (
-            <div style={RothIRAMenuStyle}>
-              <form onSubmit={this.handleRothIRASubmit}>
-                <label>
-                  <p>This is your account $ {this.state.inRothIRA}</p>
-                  Deposit money: 
-                  <input
-                  type="number"
-                  value={this.state.depositAmount}
-                  onChange={this.handleRothIRAChange}
-                  min="0.01"
-                  step="0.01"
-                  max={this.state.balance.toFixed(2)} 
-                  /> 
-                </label>
-                <button type="submit" onClick={this.handleRothIRASubmit}>Deposit!</button>
-                <button type="button" onClick={this.toggleRothIRA}>Cancel</button>
-              </form>
-            </div>
-            )}
-        {this.state.showRealEstate && (
-          <div style={realEstateMenuStyle}>
-            <form onSubmit={this.handleRealEstate}>
-            <button onClick={this.handleRealEstate}>Mansion for $100</button><br />
-            <button onClick={this.handleRealEstate}>Crappy apartment for $500</button><br />
-            <button onClick={this.handleRealEstate}>5 square meters of land for $200</button><br />
-            <button type="button" onClick={this.toggleRealEstate}>Cancel</button>
-            </form>
-          </div>
-          )}
-         {/* Stat Menu */}
+				{/* Stat Menu */}
             {this.state.showStatMenu && (
-			  <div style={statMenuStyle}>
+			<div style={statMenuStyle}>
 				<label>
-
 					Age: {this.state.age}
 					<br />
 					Balance: ${this.state.balance.toFixed(2)}
@@ -928,8 +814,6 @@ export default class GamePage extends React.Component {
 					</form>
 				</div>
 				)}
-    </div>
-
 
         {this.state.showAdvice && (
           <div style={tiaaAdviceMenuStyle}>
