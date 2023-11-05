@@ -262,11 +262,12 @@ export default class GamePage extends React.Component {
         event.preventDefault();
         const userResponse = event.target.EventResponse.value;
         if (userResponse.trim()) {
-            CallAPI("finishEvent", {message: userResponse, history: this.state.eventsHistory}).then((response) => {
+            CallAPI("finishEvent", {balance: this.state.balance, message: userResponse, history: this.state.eventsHistory}).then((response) => {
                 this.updateConsole(userResponse)
                 this.setState(() => ({
-                    eventHistory: response,
-                    newEventInfo: response.history[response.history.length-1].content
+                    eventHistory: response.history,
+                    newEventInfo: response.history[response.history.length-1].content,
+                    balance: response.balance
                 }), () => {
                     this.updateConsole(this.state.newEventInfo);
                     this.updateConsole("You turned " + (this.state.age) + "!");

@@ -1,6 +1,7 @@
 const { finishController } =  require("../util")
 const  { generateEvents } = require("./eventsController")
 const { generateHeadlines } = require("./headlinesController")
+const { stocks } = require("./stocksController")
 
 function newYear(req, res) {
     var body = req.body
@@ -15,8 +16,11 @@ function newYear(req, res) {
         generateEvents(recentHeadlines, body, body.eventsHistory).then((events) => {
             body.eventsHistory = events
         }).then(() => {
-            finishController(res, body)
-            return
+            //stocks(body.stocks, recentHeadlines).then((response) => {
+            //    body.stocks = response
+                finishController(res, body)
+                return
+            //})
         })
     })
 }

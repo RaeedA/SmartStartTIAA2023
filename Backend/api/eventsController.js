@@ -17,9 +17,12 @@ async function generateEvents(headlines, user, previousChats = []) {
                 'Try to not directly mention the headlines.\n' +
                 'You are also allowed to make events that are not related to the headlines at all.\n' +
                 'Generate a variety of events.\n' +
-                'Try to not focus on job or internship related events.\n' +
+                'Try to not focus on job or internship or housing related events.\n' +
+                'Whenever using numbers, limit them to two decimal places.\n' +
+                'Only generate events that will directly affect the player\'s balance, instead of through stocks or jobs.\n' +
                 'Keep the length short, about a couple of sentences, and end with a call to action.\n' +
                 'After stating an event, the player will give you their response, after which point you tell the player the outcomes of their decision.\n' +
+                'Do not give any follow up questions when stating the results.\n' +
                 'In addition to stating the results of the action here, mention any continuing effects from previous decisions if applicable.\n' +
                 'The player\'s name is '+ user.name + '.\n' +
                 'The game starts with the following headlines:\n' + headlines
