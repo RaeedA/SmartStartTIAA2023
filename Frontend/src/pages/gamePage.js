@@ -47,9 +47,11 @@ export default class GamePage extends React.Component {
         showActivities: false,
         showNameModal: true,
         showGamble: false, 
+        showHousing: false,
         gambleAmount: '', 
         isBankrupt: false,
         ownsHouse: false,
+        ownsAppartment: false,
         currentFrame: 0
       };
 
@@ -70,6 +72,7 @@ export default class GamePage extends React.Component {
     this.purchaseHouse = this.purchaseHouse.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.toggleStatMenu = this.toggleStatMenu.bind(this);
+    this.toggleHousing = this.toggleHousing.bind(this);
     this.consoleRef = React.createRef();
     
     //music
@@ -121,6 +124,10 @@ export default class GamePage extends React.Component {
 
   toggleGamble() {
     this.setState(prevState => ({ showGamble: !prevState.showGamble }));
+  }
+
+  toggleHousing() {
+    this.setState(prevState => ({ showHousing: !prevState.showHousing }));
   }
 
 	toggleRealEstate() {
@@ -445,6 +452,21 @@ export default class GamePage extends React.Component {
         borderRadius: '10px',
         //align: 'right'
       };
+
+      const housingMenuStyle = {
+        display: this.state.showHousing ? 'block' : 'none',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        padding: '20px',
+        zIndex: 2,
+        borderRadius: '10px',
+        //align: 'right'
+      };
       
       const animationContainerStyle = {
         paddingTop: '0px',
@@ -575,7 +597,7 @@ export default class GamePage extends React.Component {
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
               <>
-              <button onClick={() => this.purchaseHouse()}>Purchase House</button>
+              <button onClick={this.toggleHousing}>Purchase House</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
               </>
               )}
@@ -606,16 +628,16 @@ export default class GamePage extends React.Component {
                 </form>
             </div>
             )}
-			{this.state.showRealEstate && (
-				<div style={realEstateMenuStyle}>
-					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button>
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
-					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
-					</form>
-				</div>
-				)}
+          {this.state.showRealEstate && (
+            <div style={realEstateMenuStyle}>
+              <form onSubmit={this.handleRealEstate}>
+              <button onClick={this.handleRealEstate}>Mansion for $100</button>
+              <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
+              <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
+              <button type="button" onClick={this.toggleRealEstate}>Cancel</button>
+              </form>
+            </div>
+            )}
                 {this.state.showStatMenu && (
 				<div style={statMenuStyle}>
 					<form onSubmit={this.handleRealEstate}>
@@ -630,6 +652,23 @@ export default class GamePage extends React.Component {
 					<br />
 					</label>
 					<button type="button" onClick={this.toggleStatMenu}>Close</button>
+					</form>
+				</div>
+				)}
+        {this.state.showHousing && (
+				<div style={housingMenuStyle}>
+					<form onSubmit={this.handleRealEstate}>
+					<label>
+					Appartment
+					<br />
+					---
+					<br />
+					House
+					<br />
+					---
+					<br />
+					</label>
+					<button type="button" onClick={this.toggleHousing}>Close</button>
 					</form>
 				</div>
 				)}
