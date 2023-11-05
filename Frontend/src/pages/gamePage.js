@@ -69,12 +69,13 @@ export default class GamePage extends React.Component {
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
         newEventResponse: '',
-		showStatMenu: false,
+		    showStatMenu: false,
         interactionText: [],
         showActivities: false,
         showNameModal: true,
         showGamble: false, 
         showHousing: false,
+        showFirstEvent: false,
 		    showNewEvent: false,
 		    showRealEstate: false,
         gambleAmount: '', 
@@ -109,6 +110,8 @@ export default class GamePage extends React.Component {
 	  this.handleTIAA = this.handleTIAA.bind(this);
     this.handleNewEvent = this.handleNewEvent.bind(this);
 	  this.toggleNewEvent = this.toggleNewEvent.bind(this);
+    this.toggleFirstEvent = this.toggleFirstEvent.bind(this);
+    this.handleFirstEvent = this.handleFirstEvent.bind(this);
     //music
     this.audio = new Audio(gamemusic);
   }
@@ -155,7 +158,14 @@ export default class GamePage extends React.Component {
     this.setState(prevState => ({ age: prevState.age + 1 }));
     this.updateConsole("You turned " + (this.state.age + 1) + "!");
     this.checkAge();
-	this.toggleNewEvent();
+    if(this.state.age >= 19)
+    {
+	    this.toggleNewEvent();
+    }
+    else
+    {
+      this.toggleFirstEvent();
+    }
   }
 
   restartGame() {
@@ -188,6 +198,10 @@ export default class GamePage extends React.Component {
 	  
 	toggleNewEvent() {
     this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
+  }
+
+  toggleFirstEvent() {
+    this.setState(prevState => ({ showFirstEvent: !prevState.showFirstEvent }));
   }
 	  
   handleGambleChange(event) {
@@ -231,6 +245,17 @@ export default class GamePage extends React.Component {
       }
 	  this.updateConsole(response);                                                               //remove later
     }
+
+    handleFirstEvent(event) {
+      event.preventDefault();
+      const response = event.target.EventResponse.value;
+      if (response.trim()) {
+          this.setState({ EventResponse: response, showFirstEvent: false });
+        } else {
+          alert('Please enter a valid name.');
+        }
+      this.updateConsole(response);                                                               //remove later
+      }
 
   checkBankruptcy() {
     if (this.state.balance <= 0.01) {
@@ -450,6 +475,20 @@ export default class GamePage extends React.Component {
 	  
 	const newEventStyle = {
 		display: this.state.showNewEvent ? 'block' : 'none',
+		position: 'fixed',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: '300px',
+		backgroundColor: '#ffffff',
+		boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+		padding: '20px',
+		zIndex: 2,
+		borderRadius: '10px'
+	}
+
+  const firstEventStyle = {
+		display: this.state.showFirstEvent ? 'block' : 'none',
 		position: 'fixed',
 		top: '50%',
 		left: '50%',
@@ -808,6 +847,17 @@ export default class GamePage extends React.Component {
 			<div style={newEventStyle}>
 				<form onSubmit={this.handleNewEvent}>
 					<p>Lorem ipsum</ p>
+					<input type="text" name="EventResponse" required />
+				<button type="submit" >Submit</button>
+				</form>
+			</div>
+			)}
+      {/* First Event Response*/}
+			{this.state.showFirstEvent && (
+			<div style={firstEventStyle}>
+				<form onSubmit={this.handleFirstEvent}>
+					<p>Your First Decision!</ p>
+          <p>Will you attend college?</ p>
 					<input type="text" name="EventResponse" required />
 				<button type="submit" >Submit</button>
 				</form>
