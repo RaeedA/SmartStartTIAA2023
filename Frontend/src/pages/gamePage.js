@@ -152,7 +152,7 @@ export default class GamePage extends React.Component {
 
   handleRetire(event) {
     CallAPI("retire", {user: this.state}).then((response) => {
-      // @TODO PRINT OUT RESPONSE FOR THE PLAYER
+      this.updateConsole(response)
     })
   }
 
