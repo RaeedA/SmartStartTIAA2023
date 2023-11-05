@@ -785,7 +785,6 @@ export default class GamePage extends React.Component {
 					<br />
 					</label>
 					<button type="button" onClick={this.toggleStatMenu}>Close</button>
-					</form>
 				</div>
 				)}
         {this.state.showHousing && (
