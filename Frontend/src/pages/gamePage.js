@@ -114,6 +114,7 @@ export default class GamePage extends React.Component {
     this.handleNewEvent = this.handleNewEvent.bind(this);
 	  this.toggleNewEvent = this.toggleNewEvent.bind(this);
     this.updateUserProfile = this.updateUserProfile.bind(this);
+    this.handleRetire = this.handleRetire.bind(this);
 
     //music
     this.audio = new Audio(gamemusic);
@@ -141,6 +142,12 @@ export default class GamePage extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+  }
+
+  handleRetire(event) {
+    CallAPI("retire", this.state).then((response) => {
+      // @TODO PRINT OUT RESPONSE FOR THE PLAYER
+    })
   }
 
   toggleTIAAAdvice() {
@@ -793,7 +800,7 @@ export default class GamePage extends React.Component {
               {/* buttons for 50+ */}
               {this.state.age >=  50 && (
               <>
-              <button>Retire!</button>
+              <button onClick={this.handleRetire} >Retire!</button>
               </>
               )}
 			      <button onClick={this.toggleActivities}>Close</button>

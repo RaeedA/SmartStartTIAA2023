@@ -1,7 +1,7 @@
 const { finishController } =  require("../util")
 const  { generateEvents } = require("./eventsController")
 const { generateHeadlines } = require("./headlinesController")
-const { stocks } = require("./stocksController")
+//const { stocks } = require("./stocksController")
 
 function newYear(req, res) {
     var body = req.body
@@ -18,6 +18,11 @@ function newYear(req, res) {
         }).then(() => {
             //stocks(body.stocks, recentHeadlines).then((response) => {
             //    body.stocks = response
+                if(body.age == 22) {
+                    body.education = "complete"
+                    body.job - "Entry Level"
+                    body.income = 30000
+                }
                 finishController(res, body)
                 return
             //})
