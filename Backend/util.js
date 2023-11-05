@@ -18,7 +18,7 @@ async function chatWithGPT(messageList, functions = [], callback = null) {
             options.functionCall = "auto"
         }
         const GPTOutput = await openai.getChatCompletions("tiaa-gpt-4", messageList, options)
-        console.log(GPTOutput.choices[0])
+        //console.log(GPTOutput.choices[0])
         const choice = GPTOutput.choices[0]
         if(choice.finishReason == "function_call") {
             functionCall = choice.message.functionCall
