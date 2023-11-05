@@ -2,6 +2,9 @@ import React from "react";
 import background1 from '../images/background1.png';
 import background2 from '../images/2ndBackground.png';
 import gamemusic from '../music/gamemusic.mp3';
+import frame1 from '../images/TeenMCSprites/18MC1.png';
+import frame2 from '../images/TeenMCSprites/18MC2.png';
+import frame3 from '../images/TeenMCSprites/18MC3.png';
 
 /**
  * Game Page
@@ -27,7 +30,8 @@ export default class GamePage extends React.Component {
         showGamble: false, 
         gambleAmount: '', 
         isBankrupt: false,
-        ownsHouse: false
+        ownsHouse: false,
+        currentFrame: 0
       };
 
       
@@ -54,10 +58,17 @@ export default class GamePage extends React.Component {
 
   componentDidMount() {
     this.audio.play(); // Play the music when the component mounts
-  }
+    this.frameInterval = setInterval(() => {
+        this.setState(prevState => ({
+          currentFrame: (prevState.currentFrame + 1) % 3, // cycle through 0, 1, 2
+        }));
+      }, 1000 / 3); // update the frame every third of a second
+    }
+  
 
   componentWillUnmount() {
     this.audio.pause(); // Pause the music when the component unmounts
+    clearInterval(this.frameInterval);
   }
 
   // Handlers
@@ -363,9 +374,15 @@ export default class GamePage extends React.Component {
         zIndex: 2,
         borderRadius: '10px',
         //align: 'right'
+
+      };
+      
+      const animationContainerStyle = {
+        paddingTop: '0px',
+        textAlign: 'center',
       };
 
-
+      
     return (
       <div>
         {this.state.showNameModal && (
@@ -486,6 +503,14 @@ export default class GamePage extends React.Component {
             Activities
           </button>
         </div>
+        {/* Animation Frames */}
+    <div style={animationContainerStyle}>
+    <img src={
+        this.state.currentFrame === 0 ? frame1 :
+        this.state.currentFrame === 1 ? frame2 :
+        frame3
+    } alt="Character Animation" />
+</div>
 
     {/* out of money (bankruptcy) */}
     {this.state.isBankrupt && (
