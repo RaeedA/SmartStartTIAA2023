@@ -805,8 +805,6 @@ export default class GamePage extends React.Component {
         <h1 style={ageTextAlign}>{this.state.age}</ h1>
         <img src={job} style={jobImageStyle} alt='job image' />
         <h1 style={jobTextAlign}>{this.state.job}</ h1>
-        <img src={coin} style={BalanceImageStyle} alt='balance image' />
-        <h1 style={balanceTextAlign}>{this.state.balance.toFixed(2)}</ h1>
         
         <img src={arrowup} style={incomeImageStyle} alt='income image' />
         <h1 style={incomeTextAlign}>+${this.state.income}</ h1>
