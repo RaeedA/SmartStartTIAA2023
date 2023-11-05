@@ -24,6 +24,7 @@ import arrowup from '../images/arrowup.png';
 import coin from '../images/coin.png';
 import TIAA from '../images/TIAA.png';
 import stat from '../images/stats.png';
+import CallAPI from '../util.js'
 
 //import TIAA from '../images/TIAA.png';
 /**
