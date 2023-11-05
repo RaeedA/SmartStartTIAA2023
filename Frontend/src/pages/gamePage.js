@@ -248,7 +248,7 @@ export default class GamePage extends React.Component {
         if (response.trim()) {
             this.setState({ EventResponse: response, showNewEvent: false });
         } else {
-            alert('Please enter a valid name.');
+            alert('Please enter an input.');
         }
         this.updateConsole(response);                                                               //remove later
     }
