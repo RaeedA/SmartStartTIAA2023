@@ -24,6 +24,7 @@ import arrowup from '../images/arrowup.png';
 import coin from '../images/coin.png';
 import TIAA from '../images/TIAA.png';
 import stat from '../images/stats.png';
+import { CallAPI } from "../util";
 
 //import TIAA from '../images/TIAA.png';
 /**
@@ -70,22 +71,23 @@ export default class GamePage extends React.Component {
             education: 'TEMPRORARY',
             backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
             newEventResponse: '',
+            newEventInfo: '',
 		        showStatMenu: false,
             interactionText: [],
             showActivities: false,
             showNameModal: true,
             showGamble: false, 
-        showHousing: false,
-    		        showNewEvent: false,
-		            showRealEstate: false,
+            showHousing: false,
+    		    showNewEvent: false,
+		        showRealEstate: false,
             gambleAmount: '', 
             isBankrupt: false,
             ownsHouse: false,
-        ownsAppartment: false,
+            ownsAppartment: false,
             currentFrame: 0,
-        showAdvice: false,
-        adviceText: '',
-            eventHistory: [],
+            showAdvice: false,
+            adviceText: '',
+            eventsHistory: [],
             headlineHistory: []
         };
 
@@ -154,26 +156,40 @@ export default class GamePage extends React.Component {
   }
 
     increaseAge() {
-        this.setState(prevState => ({ age: prevState.age + 1 }));
-        this.updateConsole("You turned " + (this.state.age + 1) + "!");
-        this.checkAge();
-        const toSend = {
-            name: this.state.name,
-            rothIRA: this.state.rothIRA,
-            balance: this.state.balance,
-            job: this.state.job,
-            income: this.state.income,
-            stocks: this.state.stocks,
-            houseType: this.state.ownsHouse ? "house" : "",
-            education: this.state.education,
-            expenses: this.state.expenses,
-            stocks: this.state.stocks,
-            realEstate: this.state.realEstate,
-            realEstateIncome: this.state.realEstateIncome,
-            eventsHistory: this.state.eventsHistory,
-            headlineHistory: this.state.headlineHistory
-        }
-        this.toggleNewEvent();
+        this.setState(prevState => ({ age: prevState.age + 1 }), () => {
+            this.updateConsole("Aging Up...")
+            this.checkAge();
+            const toSend = {
+                name: this.state.name,
+                age: this.state.age,
+                rothIRA: this.state.rothIRA,
+                balance: this.state.balance,
+                job: this.state.job,
+                income: this.state.income,
+                stocks: this.state.stocks,
+                houseType: this.state.ownsHouse ? "house" : "",
+                education: this.state.education,
+                expenses: this.state.expenses,
+                stocks: this.state.stocks,
+                realEstate: this.state.realEstate,
+                realEstateIncome: this.state.realEstateIncome,
+                eventsHistory: this.state.eventsHistory,
+                headlineHistory: this.state.headlineHistory
+            }
+            CallAPI("newYear", toSend).then((response) => {
+                this.setState(() => ({
+                    balance: response.balance,
+                    stocks: response.stocks,
+                    eventsHistory: response.eventsHistory,
+                    headlineHistory: response.headlineHistory,
+                    newEventInfo: response.eventsHistory[response.eventsHistory.length-1].content
+                }), () => {
+                    this.removeLastMessage()
+                    this.updateConsole(this.state.newEventInfo)
+                    this.toggleNewEvent();
+                })
+            })
+        })
     }
 
     restartGame() {
@@ -244,13 +260,21 @@ export default class GamePage extends React.Component {
 	  
   	handleNewEvent(event) {
         event.preventDefault();
-        const response = event.target.EventResponse.value;
-        if (response.trim()) {
-            this.setState({ EventResponse: response, showNewEvent: false });
+        const userResponse = event.target.EventResponse.value;
+        if (userResponse.trim()) {
+            CallAPI("finishEvent", {message: userResponse, history: this.state.eventsHistory}).then((response) => {
+                this.updateConsole(userResponse)
+                this.setState(() => ({
+                    eventHistory: response,
+                    newEventInfo: response.history[response.history.length-1].content
+                }), () => {
+                    this.updateConsole(this.state.newEventInfo);
+                    this.updateConsole("You turned " + (this.state.age) + "!");
+                })
+            })
         } else {
             alert('Please enter an input.');
         }
-        this.updateConsole(response);                                                               //remove later
     }
 
     checkBankruptcy() {
@@ -825,7 +849,7 @@ export default class GamePage extends React.Component {
         {this.state.showNewEvent && (
         <div style={newEventStyle}>
           <form onSubmit={this.handleNewEvent}>
-            <p>Lorem ipsum</ p>
+            <p>{this.state.newEventInfo}</ p>
             <input type="text" name="EventResponse" required />
           <button type="submit" >Submit</button>
           </form>
