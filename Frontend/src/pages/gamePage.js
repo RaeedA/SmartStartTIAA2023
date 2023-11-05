@@ -17,6 +17,11 @@ import frame9 from '../images/TeenMCSprites/35MC3.png';
 import frame10 from '../images/TeenMCSprites/55MC1.png';
 import frame11 from '../images/TeenMCSprites/55MC2.png';
 import frame12 from '../images/TeenMCSprites/55MC3.png';
+import heart from '../images/heart.png';
+import job from '../images/job.png';
+import arrowdown from '../images/arrowdown.png';
+import arrowup from '../images/arrowup.png';
+
 //import TIAA from '../images/TIAA.png';
 /**
  * Game Page
@@ -32,7 +37,9 @@ export default class GamePage extends React.Component {
 		    realEstate: [[]],
 		    stocks: [],
 		    rothIRA: [],
-		    job: '',
+		    job: 'NONE',
+	  		income: 0,
+  			expenses: 0,
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
         showStatMenu: false,
@@ -335,30 +342,30 @@ export default class GamePage extends React.Component {
       };
 	  
 	const realEstateMenuStyle = {
-			display: this.state.showRealEstate ? 'block' : 'none',
-			position: 'fixed',
-			top: '50%',
-			left: '50%',
-			transform: 'translate(-50%, -50%)',
-			width: '300px',
-			backgroundColor: '#ffffff',
-			boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-			padding: '20px',
-			zIndex: 2,
-			borderRadius: '10px'
-		  };
+		display: this.state.showRealEstate ? 'block' : 'none',
+		position: 'fixed',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: '300px',
+		backgroundColor: '#ffffff',
+		boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+		padding: '20px',
+		zIndex: 2,
+		borderRadius: '10px'
+	  };
 	  
     const bankruptModalStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 10,
+		position: 'fixed',
+		top: 0,
+		left: 0,
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		zIndex: 10,
     };
 
     const bankruptContentStyle = {
@@ -370,13 +377,13 @@ export default class GamePage extends React.Component {
       };
   
     const bankruptButtonStyle = {
-    padding: '10px 20px',
-    fontSize: '16px',
-    color: 'white',
-    backgroundColor: 'black',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
+		padding: '10px 20px',
+		fontSize: '16px',
+		color: 'white',
+		backgroundColor: 'black',
+		border: 'none',
+		borderRadius: '5px',
+		cursor: 'pointer',
     };
 
     const backgroundStyle = {
@@ -420,14 +427,80 @@ export default class GamePage extends React.Component {
         zIndex: 2,
         borderRadius: '10px',
         //align: 'right'
-
       };
       
       const animationContainerStyle = {
         paddingTop: '0px',
         textAlign: 'center',
       };
-
+	
+		const ageImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			left: 20,
+			
+		};
+		
+		const jobImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			left: 140,
+			
+		};
+		
+		const incomeImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			right: 20,
+			
+		};
+		
+		const expensesImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			right: 140,
+			
+		};
+		
+		const ageTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			left: 80,
+			textAlign: 'left',
+		};
+		
+		const jobTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			left: 200,
+			textAlign: 'left',
+		};
+		
+		const incomeTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			right: 80,
+			textAlign: 'left',
+		};
+		
+		const expensesTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			right: 200,
+			textAlign: 'left',
+		};
       
     return (
       <div>
@@ -535,9 +608,20 @@ export default class GamePage extends React.Component {
 
         {/* bottom of screen */}
         <div style={bottomButtonContainerStyle}>
+		
+			<img src={heart} style={ageImageStyle} alt='Age image' />
+			<h1 style={ageTextAlign}>{this.state.age}</ h1>
+			<img src={job} style={jobImageStyle} alt='job image' />
+			<h1 style={jobTextAlign}>{this.state.job}</ h1>
+			
+			<img src={arrowup} style={incomeImageStyle} alt='income image' />
+			<h1 style={incomeTextAlign}>{this.state.income}</ h1>
+			<img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
+			<h1 style={expensesTextAlign}>{this.state.expenses}</ h1>
+		
           {/* Increment Age Button*/}
           <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
-            <span style={plusStyle}>+</span> Age
+            <span style={plusStyle}>+ </span>Age
           </button>
 
           {/* Activities Button */}
