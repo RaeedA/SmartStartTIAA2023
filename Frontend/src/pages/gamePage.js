@@ -53,6 +53,7 @@ export default class GamePage extends React.Component {
         showGamble: false, 
 		showNewEvent: false,
 		showRealEstate: false,
+		showInfo:false,
         gambleAmount: '', 
         isBankrupt: false,
         ownsHouse: false,
@@ -80,6 +81,7 @@ export default class GamePage extends React.Component {
 	this.handleTIAA = this.handleTIAA.bind(this);
     this.handleNewEvent = this.handleNewEvent.bind(this);
 	this.toggleNewEvent = this.toggleNewEvent.bind(this);
+	this.toggleInfo = this.toggleInfo.bind(this);
     //music
     this.audio = new Audio(gamemusic);
   }
@@ -143,6 +145,10 @@ export default class GamePage extends React.Component {
 	toggleNewEvent() {
     this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
   }
+  
+  toggleInfo() {
+    this.setState(prevState => ({ showInfo: !prevState.showInfo }));
+  }
 	  
   handleGambleChange(event) {
     this.setState({ gambleAmount: event.target.value });
@@ -180,11 +186,12 @@ export default class GamePage extends React.Component {
 		event.preventDefault();
 		const response = event.target.EventResponse.value;
 		if (response.trim()) {
-        this.setState({ EventResponse: response, showNewEvent: false });
+        this.setState({ EventResponse: response, showNewEvent: false});
+		this.setState({showInfo: true});
       } else {
         alert('Please enter a valid name.');
       }
-	  this.updateConsole(response);                                                               //remove later
+	  this.updateConsole(this.state.showInfo);                                                               //remove later
     }
 
   checkBankruptcy() {
@@ -668,6 +675,21 @@ export default class GamePage extends React.Component {
 			overflow: 'hidden',
 			cursor: 'pointer',
 		}
+		
+		const infoStyle = {
+			display: this.state.showInfo? 'block' : 'none',
+			position: 'fixed',
+			top: '50%',
+			left: '50%',
+			transform: 'translate(-50%, -50%)',
+			width: '300px',
+			backgroundColor: '#FAB09C',
+			boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+			padding: '10px',
+			zIndex: 3,
+			borderRadius: '10px'
+			
+		}
 	
     return (
       <div>
@@ -798,6 +820,15 @@ export default class GamePage extends React.Component {
 					<input type="text" name="EventResponse" required />
 				<button type="submit" >Submit</button>
 				</form>
+			</div>
+			)}
+			{/* Info Window */}
+			{this.state.showInfo && (
+			<div style={infoStyle}>
+			<form>
+				<p>Info Lorem Ipsum</p>
+				<button type="button"  onClick={this.toggleInfo}>Close</button>
+				</ form>
 			</div>
 			)}
         </div>
