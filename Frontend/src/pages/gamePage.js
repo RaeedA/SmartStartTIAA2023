@@ -721,23 +721,15 @@ export default class GamePage extends React.Component {
               <>
               <button onClick={this.toggleHousing}>Purchase House</button>
 			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
-
-              <button onClick={this.toggleGamble}>Gamble</button>
-		      <br />
-		      <button onClick={this.toggleActivities}>Close</button>
               </>
               )}
               {/* buttons for 50+ */}
               {this.state.age >=  50 && (
-              <button>Retire!</button>
-              )}
-			  
-			  <br />
-			  <button onClick={this.toggleActivities}>Close</button>
               <>
               <button>Retire!</button>
               </>
               )}
+			      <button onClick={this.toggleActivities}>Close</button>
             </div>
             {/* Gamble Menu */}
             {this.state.showGamble && (
