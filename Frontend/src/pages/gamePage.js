@@ -310,7 +310,8 @@ export default class GamePage extends React.Component {
     purchaseHouse() {
         this.setState({
             ownsHouse: true,
-            balance: this.state.balance - 1000,
+            balance: this.state.balance - 10000,
+            expenses: 4000
         }, () => {
             if (this.state.balance < 0) {
               this.checkBankruptcy();
