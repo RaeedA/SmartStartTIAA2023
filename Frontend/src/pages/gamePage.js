@@ -21,6 +21,8 @@ import heart from '../images/heart.png';
 import job from '../images/job.png';
 import arrowdown from '../images/arrowdown.png';
 import arrowup from '../images/arrowup.png';
+import coin from '../images/coin.png';
+import TIAA from '../images/TIAA.png';
 
 //import TIAA from '../images/TIAA.png';
 /**
@@ -45,7 +47,7 @@ export default class GamePage extends React.Component {
         showStatMenu: false,
         interactionText: [],
         showActivities: false,
-        showNameModal: true,
+        showNameModal: false,
         showGamble: false, 
         gambleAmount: '', 
         isBankrupt: false,
@@ -156,6 +158,7 @@ export default class GamePage extends React.Component {
 			showRealEstate: false,
 			balance: prevState.balance - 100,
 		  }));
+		this.updateConsole("You purchased a "+ this.state.realEstate[0][0]);
 	  }
 
   checkBankruptcy() {
@@ -334,14 +337,15 @@ export default class GamePage extends React.Component {
     };
 
     const bottomButtonContainerStyle = {
-      position: 'fixed',
-      bottom: '10px',
+      backgroundColor: 'rgba(255,255,255,0.5)',
+	  position: 'fixed',
+     bottom: '10px',
       left: '50%',
       transform: 'translateX(-50%)',
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      zIndex: 0
+      zIndex: 0,
     };
 
     const gambleMenuStyle = {
@@ -471,6 +475,17 @@ export default class GamePage extends React.Component {
 			
 		};
 		
+		
+		const BalanceImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			left: 300,
+			
+		};
+		
 		const incomeImageStyle = {
 			objectFit: 'cover',
 			width: '50px',
@@ -491,6 +506,15 @@ export default class GamePage extends React.Component {
 			
 		};
 		
+		const TIAAImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 15,
+			marginLeft: 10,
+		};
+		
 		const ageTextAlign = {
 			position: 'absolute',
 			bottom: 0,
@@ -502,6 +526,13 @@ export default class GamePage extends React.Component {
 			position: 'absolute',
 			bottom: 0,
 			left: 200,
+			textAlign: 'left',
+		};
+		
+		const balanceTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			left: 350,
 			textAlign: 'left',
 		};
 		
@@ -518,6 +549,13 @@ export default class GamePage extends React.Component {
 			right: 200,
 			textAlign: 'left',
 		};
+		
+		const invisibilityPotion = {
+			background: 'transparent',
+			border: 'none',
+		};
+		
+		
       
     return (
       <div>
@@ -576,7 +614,10 @@ export default class GamePage extends React.Component {
               {this.state.age >= 22 && (
               <>
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
-			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
+			  <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
+              <button onClick={this.toggleGamble}>Gamble</button>
+			  <br />
+			  <button onClick={this.toggleActivities}>Close</button>
               </>
               )}
               {/* buttons for 50+ */}
@@ -609,9 +650,9 @@ export default class GamePage extends React.Component {
 			{this.state.showRealEstate && (
 				<div style={realEstateMenuStyle}>
 					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button>
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
+				  <button onClick={this.handleRealEstate}>Mansion for $100</button><br />
+				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button><br />
+				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button><br />
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
 					</form>
 				</div>
@@ -642,16 +683,18 @@ export default class GamePage extends React.Component {
 			<h1 style={ageTextAlign}>{this.state.age}</ h1>
 			<img src={job} style={jobImageStyle} alt='job image' />
 			<h1 style={jobTextAlign}>{this.state.job}</ h1>
+			<img src={coin} style={BalanceImageStyle} alt='balance image' />
+			<h1 style={balanceTextAlign}>{this.state.balance.toFixed(2)}</ h1>
 			
 			<img src={arrowup} style={incomeImageStyle} alt='income image' />
-			<h1 style={incomeTextAlign}>{this.state.income}</ h1>
+			<h1 style={incomeTextAlign}>+${this.state.income}</ h1>
 			<img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
+			<h1 style={expensesTextAlign}>-${this.state.expenses}</ h1>
 			<h1 style={expensesTextAlign}>{this.state.expenses}</ h1>
           {/* Restart Game Button*/}
                 <button onClick={this.restartGame} style={restartButtonStyle} type="button">
                   Restart Game
                 </button>
-
           {/* Increment Age Button*/}
           <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
             <span style={plusStyle}>+ </span>Age
@@ -667,6 +710,9 @@ export default class GamePage extends React.Component {
           >
             Activities
           </button>
+		  
+		  {/* this could be improved. The button and image are not overlapping*/}
+		  <button style={invisibilityPotion} ><img src={TIAA}  style={TIAAImageStyle} /></button>
         </div>
         {/* Animation Frames */}
     <div style={animationContainerStyle}>
