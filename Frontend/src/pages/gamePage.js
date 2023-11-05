@@ -831,8 +831,6 @@ export default class GamePage extends React.Component {
               {/* Activities Menu */}
               <div style={activitiesMenuStyle}>
               {/* buttons for 18+*/}
-              <button>Apply for Job</button>
-              <button>Stock Market</button>
               <button onClick={this.toggleGamble}>Gamble</button>
               <button onClick={this.toggleRothIRA}>Roth IRA</button>
               <button onClick={this.toggleTIAAAdvice}>Get TIAA Advice</button>
