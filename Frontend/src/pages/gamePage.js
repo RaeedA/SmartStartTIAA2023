@@ -13,13 +13,14 @@ export default class GamePage extends React.Component {
       this.state = {
         age: 18,
         balance: (Math.random() * (5000 - 500) + 500),  //random balance between 500 and 5,000 dollars
-        name: 'First Last',
+        name: 'Your Name',
 		realEstate: [[]],
 		stocks: [],
 		rothIRA: [],
 		job: '',
         interactionText: [],
         showActivities: false,
+        showNameModal: true,
         showGamble: false, 
         gambleAmount: '', 
         isBankrupt: false,
@@ -41,6 +42,7 @@ export default class GamePage extends React.Component {
 	this.handleRealEstate = this.handleRealEstate.bind(this);
     this.checkBankruptcy = this.checkBankruptcy.bind(this);
     this.purchaseHouse = this.purchaseHouse.bind(this);
+    this.handleNameSubmit = this.handleNameSubmit.bind(this);
     
     //music
     this.audio = new Audio(gamemusic);
@@ -144,6 +146,16 @@ export default class GamePage extends React.Component {
     }));
   }
 
+  handleNameSubmit(event) {
+    event.preventDefault();
+    const newName = event.target.name.value;
+    if (newName.trim()) {
+        this.setState({ name: newName, showNameModal: false });
+      } else {
+        alert('Please enter a valid name.');
+      }
+    }
+
   //styling elements
   render() {
     const headerStyle = {
@@ -174,7 +186,7 @@ export default class GamePage extends React.Component {
     };
 
     const inputStyle = {
-      width: '100%',
+      width: '70%',
       padding: '10px',
       fontSize: '16px',
       margin: '20px 0'
@@ -314,9 +326,38 @@ export default class GamePage extends React.Component {
         zIndex: '-1'
       };
 
+      const nameModalStyle = {
+        display: this.state.showNameModal ? 'block' : 'none',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px',
+        backgroundColor: '#2596be',
+        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        padding: '20px',
+        zIndex: 3,
+        borderRadius: '10px'
+      };
+
 
     return (
       <div>
+        {this.state.showNameModal && (
+            <div style={nameModalStyle}>
+                <form onSubmit={this.handleNameSubmit}>
+                    <label>
+                        Enter Character Name:
+                        <input
+                        type="text"
+                        name="name" 
+                        required
+                        />
+                    </label>
+                    <button type="submit">Submit</button>
+                </form>
+        </div>
+        )}
         {/* Background image */}
         <div style={backgroundStyle}></div>
 
