@@ -32,6 +32,29 @@ import stat from '../images/stats.png';
 export default class GamePage extends React.Component {
     constructor(props) {
         super(props);
+      //TIAA advice
+      this.adviceArray = [
+        'The sooner you begin saving and investing for retirement, the more time your money has to grow.',
+        'Spread your investments across different asset classes to reduce risk.',
+        'If available, take advantage of employer-sponsored retirement plans like 401(k)s.',
+        'Consider opening traditional or Roth IRAs for additional retirement savings.',
+        'Explore the option of annuities to secure a steady income stream in retirement.',
+        'Create a retirement budget to estimate your expenses and plan accordingly.',
+        'Understand your Social Security benefits and when to start claiming them.',
+        'Account for healthcare expenses, as they often increase in retirement.',
+        'Consider how inflation may erode the purchasing power of your savings.',
+        'Consult with financial advisors to make informed decisions tailored to your specific situation.',
+        'Plan for a retirement that may last several decades to ensure you don\'t outlive your savings.',
+        'Maintain an emergency fund to cover unexpected expenses in retirement.',
+        'Develop a plan for the distribution of your assets after you pass away.',
+        'Optimize your investments for tax efficiency to minimize tax burdens in retirement.',
+        'Balance liquidity needs with potential investment returns based on your retirement stage.',
+        'Determine your risk tolerance and align your investments accordingly.',
+        'Be prepared to adjust your retirement plan as circumstances change.',
+        'Remember that retirement planning is a dynamic process, and it\'s essential to stay informed, reassess your plan periodically, and seek professional guidance when needed.'
+
+      ];
+
         // character initial traits
         this.state = {
             age: 18,
@@ -50,40 +73,48 @@ export default class GamePage extends React.Component {
 		        showStatMenu: false,
             interactionText: [],
             showActivities: false,
-            showNameModal: false,
+            showNameModal: true,
             showGamble: false, 
-    		    showNewEvent: false,
-		        showRealEstate: false,
+        showHousing: false,
+    		        showNewEvent: false,
+		            showRealEstate: false,
             gambleAmount: '', 
             isBankrupt: false,
             ownsHouse: false,
+        ownsAppartment: false,
             currentFrame: 0,
+        showAdvice: false,
+        adviceText: '',
             eventHistory: [],
             headlineHistory: []
         };
 
-        // Bindings
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.increaseAge = this.increaseAge.bind(this);
-        this.toggleActivities = this.toggleActivities.bind(this);
-        this.toggleGamble = this.toggleGamble.bind(this);
-        this.toggleRealEstate = this.toggleRealEstate.bind(this);
-        this.handleGambleChange = this.handleGambleChange.bind(this);
-        this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
-        this.handleRealEstate = this.handleRealEstate.bind(this);
-        this.checkBankruptcy = this.checkBankruptcy.bind(this);
-        this.purchaseHouse = this.purchaseHouse.bind(this);
-        this.handleNameSubmit = this.handleNameSubmit.bind(this);
-        this.toggleStatMenu = this.toggleStatMenu.bind(this);
-        this.consoleRef = React.createRef();
-        this.handleTIAA = this.handleTIAA.bind(this);
-        this.handleNewEvent = this.handleNewEvent.bind(this);
-        this.toggleNewEvent = this.toggleNewEvent.bind(this);
+      
+      
 
-        //music
-        this.audio = new Audio(gamemusic);
-    }
+    // Bindings
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.increaseAge = this.increaseAge.bind(this);
+    this.toggleActivities = this.toggleActivities.bind(this);
+    this.toggleGamble = this.toggleGamble.bind(this);
+	  this.toggleRealEstate = this.toggleRealEstate.bind(this);
+    this.handleGambleChange = this.handleGambleChange.bind(this);
+    this.handleGambleSubmit = this.handleGambleSubmit.bind(this);
+	  this.handleRealEstate = this.handleRealEstate.bind(this);
+    this.checkBankruptcy = this.checkBankruptcy.bind(this);
+    this.purchaseHouse = this.purchaseHouse.bind(this);
+    this.handleNameSubmit = this.handleNameSubmit.bind(this);
+    this.toggleStatMenu = this.toggleStatMenu.bind(this);
+    this.toggleHousing = this.toggleHousing.bind(this);
+    this.consoleRef = React.createRef();
+    this.toggleTIAAAdvice = this.toggleTIAAAdvice.bind(this);
+	  this.handleTIAA = this.handleTIAA.bind(this);
+    this.handleNewEvent = this.handleNewEvent.bind(this);
+	  this.toggleNewEvent = this.toggleNewEvent.bind(this);
+    //music
+    this.audio = new Audio(gamemusic);
+  }
 
     componentDidMount() {
         this.checkAge()
@@ -105,9 +136,22 @@ export default class GamePage extends React.Component {
         this.setState({ interactionText: event.target.value });
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
+  handleSubmit(event) {
+    event.preventDefault();
+  }
+
+  toggleTIAAAdvice() {
+    if (!this.state.showAdvice) {
+      // If we are about to show the advice, pick a random advice string
+      const randomAdvice = this.adviceArray[Math.floor(Math.random() * this.adviceArray.length)];
+      this.setState({
+        adviceText: '\"' + randomAdvice + '\"'
+      });
     }
+  
+    // Then toggle the visibility of the advice popup
+    this.setState(prevState => ({ showAdvice: !prevState.showAdvice }));
+  }
 
     increaseAge() {
         this.setState(prevState => ({ age: prevState.age + 1 }));
@@ -148,13 +192,17 @@ export default class GamePage extends React.Component {
         this.setState(prevState => ({ showGamble: !prevState.showGamble }));
     }
 
-    toggleRealEstate() {
-        this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
-    }
-      
-  	toggleNewEvent() {
-        this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
-    }
+  toggleHousing() {
+    this.setState(prevState => ({ showHousing: !prevState.showHousing }));
+  }
+
+	toggleRealEstate() {
+		this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
+	  }
+	  
+	toggleNewEvent() {
+    this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
+  }
 	  
     handleGambleChange(event) {
         this.setState({ gambleAmount: event.target.value });
@@ -377,17 +425,16 @@ export default class GamePage extends React.Component {
         borderRadius: '10px'
       };
 
-      const bottomButtonContainerStyle = {
-        backgroundColor: 'rgba(255,255,255,0.5)',
+    const bottomButtonContainerStyle = {
       position: 'fixed',
       bottom: '10px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        justifyContent: 'center',
-        width: '100%',
-        zIndex: 0,
-      };
+      left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%',
+      zIndex: 0
+    };
 
     const gambleMenuStyle = {
         display: this.state.showGamble ? 'block' : 'none',
@@ -504,6 +551,21 @@ export default class GamePage extends React.Component {
         borderRadius: '10px',
         //align: 'right'
       };
+
+      const housingMenuStyle = {
+        display: this.state.showHousing ? 'block' : 'none',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        padding: '20px',
+        zIndex: 2,
+        borderRadius: '10px',
+        //align: 'right'
+      };
       
       const animationContainerStyle = {
         paddingTop: '0px',
@@ -527,17 +589,6 @@ export default class GamePage extends React.Component {
 			position: 'fixed',
 			bottom: 10,
 			left: 140,
-			
-		};
-		
-		
-		const BalanceImageStyle = {
-			objectFit: 'cover',
-			width: '50px',
-			height: '50px',	
-			position: 'fixed',
-			bottom: 10,
-			left: 300,
 			
 		};
 		
@@ -579,7 +630,6 @@ export default class GamePage extends React.Component {
 			marginLeft: 70,
 
 		};
-		
 		const ageTextAlign = {
 			position: 'absolute',
 			bottom: 0,
@@ -591,13 +641,6 @@ export default class GamePage extends React.Component {
 			position: 'absolute',
 			bottom: 0,
 			left: 200,
-			textAlign: 'left',
-		};
-		
-		const balanceTextAlign = {
-			position: 'absolute',
-			bottom: 0,
-			left: 350,
 			textAlign: 'left',
 		};
 		
@@ -614,6 +657,20 @@ export default class GamePage extends React.Component {
 			right: 200,
 			textAlign: 'left',
 		};
+    const tiaaAdviceMenuStyle = {
+      display: this.state.showAdvice ? 'block' : 'none',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '300px',
+      backgroundColor: '#ffffff',
+      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+      padding: '20px',
+      zIndex: 2,
+      borderRadius: '10px',
+    };
+      
 		
 		const invisibilityPotion = {
 			background: 'transparent',
@@ -673,16 +730,20 @@ export default class GamePage extends React.Component {
               <button>Stock Market</button>
               <button onClick={this.toggleGamble}>Gamble</button>
               <button>Roth IRA</button>
+              <button onClick={this.toggleTIAAAdvice}>Get TIAA Advice</button>
               
               {/* buttons for 22+ */}
               {this.state.age >= 22 && (
               <>
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
-          <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
-                <button onClick={this.toggleGamble}>Gamble</button>
-          <br />
-          <button onClick={this.toggleActivities}>Close</button>
-                </>
+          <button onClick={this.toggleHousing}>Purchase House</button>
+          <button onClick={this.toggleHousing}>Purchase House</button>
+			        <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
+
+              <button onClick={this.toggleGamble}>Gamble</button>
+		      <br />
+		      <button onClick={this.toggleActivities}>Close</button>
+              </>
                 )}
                 {/* buttons for 50+ */}
                 {this.state.age >=  50 && (
@@ -771,7 +832,6 @@ export default class GamePage extends React.Component {
           >
             Activities
           </button>
-		  
 		  {/* this could be improved. The button and image are not overlapping*/}
 		  <button style={invisibilityPotion} onClick={this.handleTIAA}>
 			<img src={TIAA}  style={TIAAImageStyle} alt='TIAA advisor'/>
