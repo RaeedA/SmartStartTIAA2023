@@ -92,8 +92,7 @@ export default class GamePage extends React.Component {
         };
 
       
-      
-
+    
     // Bindings
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -114,6 +113,8 @@ export default class GamePage extends React.Component {
 	  this.handleTIAA = this.handleTIAA.bind(this);
     this.handleNewEvent = this.handleNewEvent.bind(this);
 	  this.toggleNewEvent = this.toggleNewEvent.bind(this);
+    this.updateUserProfile = this.updateUserProfile.bind(this);
+
     //music
     this.audio = new Audio(gamemusic);
   }
@@ -190,6 +191,29 @@ export default class GamePage extends React.Component {
                 })
             })
         })
+    }
+
+    updateUserProfile() {
+        var content = this.state.name + ' is now ' + this.state.age + ' years old, and '
+        if(this.state.job != 'NONE') {
+            content += 'has been holding a job as a ' + this.state.job + ' making $' + this.state.income.toFixed(2) + ' a year.'
+        } else {
+            content += 'is currently unemployed.'
+        }
+        if(this.state.education == "temporary") {
+            content += ' They are currently attending college.'
+        }
+        if(this.state.ownsHouse) {
+            content += ' They currently live in a house.'
+        } else {
+            content += ' They are currently living at their parent\'s house.'
+        }
+        content += ' They currently have $' + this.state.balance.toFixed(2) + ' in their bank account. They own '
+        content +=  this.state.realEstate.length + ' rental properties giving them $' + this.state.realEstateIncome + ' a year.'
+        console.log(content)
+        this.setState(() => ({
+            backgroundInfo: content
+        }))
     }
 
     restartGame() {
@@ -271,6 +295,7 @@ export default class GamePage extends React.Component {
                 }), () => {
                     this.updateConsole(this.state.newEventInfo);
                     this.updateConsole("You turned " + (this.state.age) + "!");
+                    this.updateUserProfile();
                 })
             })
         } else {
@@ -342,7 +367,7 @@ export default class GamePage extends React.Component {
         event.preventDefault();
         const newName = event.target.name.value;
         if (newName.trim()) {
-            this.setState({ name: newName, showNameModal: false, showStatMenu: true });
+            this.setState({ name: newName, showNameModal: false, showStatMenu: false }, this.updateUserProfile);
         } else {
             alert('Please enter a valid name.');
         }
@@ -808,13 +833,7 @@ export default class GamePage extends React.Component {
             {this.state.showStatMenu && (
 			<div style={statMenuStyle}>
 				<label>
-					Age: {this.state.age}
-					<br />
-					Balance: ${this.state.balance.toFixed(2)}
-					<br />
-					Education: {this.state.education}
-					<br />
-					Background: {this.state.backgroundInfo}
+					{this.state.backgroundInfo}
 					<br />
 					</label>
 					<button type="button" onClick={this.toggleStatMenu}>Close</button>
