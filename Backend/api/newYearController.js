@@ -23,6 +23,7 @@ function newYear(req, res) {
                     body.job - "Entry Level"
                     body.income = 30000
                 }
+                body.rothIRA = body.rothIRA * 1.075
                 finishController(res, body)
                 return
             //})
