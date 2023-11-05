@@ -41,6 +41,7 @@ function changeStocks(stockList, market) {
     for(stockIndex in stockList) {
         market[stockIndex] = (market[stockIndex] * ((100 + (stockList[stockIndex]*10)) * 0.01)).toFixed(2)
     }
+    return "Data saved."
 }
 
 module.exports = {stocks}
