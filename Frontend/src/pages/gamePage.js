@@ -21,6 +21,9 @@ import heart from '../images/heart.png';
 import job from '../images/job.png';
 import arrowdown from '../images/arrowdown.png';
 import arrowup from '../images/arrowup.png';
+import coin from '../images/coin.png';
+import TIAA from '../images/TIAA.png';
+import stat from '../images/stats.png';
 
 //import TIAA from '../images/TIAA.png';
 /**
@@ -42,11 +45,14 @@ export default class GamePage extends React.Component {
   			expenses: 0,
         education: 'TEMPRORARY',
         backgroundInfo: 'The Retirement Investment Game had begun for Emma. At age 18, she was faced with the exciting challenge of building her financial future while pursuing her dreams. The decisions she made now would determine whether she would be able to retire comfortably and continue to follow her passions. Emma was determined to make the right choices and build a life that combined adventure and security.',
-        showStatMenu: false,
+        newEventResponse: '',
+		showStatMenu: false,
         interactionText: [],
         showActivities: false,
-        showNameModal: true,
+        showNameModal: false,
         showGamble: false, 
+		showNewEvent: false,
+		showRealEstate: false,
         gambleAmount: '', 
         isBankrupt: false,
         ownsHouse: false,
@@ -71,7 +77,9 @@ export default class GamePage extends React.Component {
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.toggleStatMenu = this.toggleStatMenu.bind(this);
     this.consoleRef = React.createRef();
-    
+	this.handleTIAA = this.handleTIAA.bind(this);
+    this.handleNewEvent = this.handleNewEvent.bind(this);
+	this.toggleNewEvent = this.toggleNewEvent.bind(this);
     //music
     this.audio = new Audio(gamemusic);
   }
@@ -105,6 +113,11 @@ export default class GamePage extends React.Component {
     this.setState(prevState => ({ age: prevState.age + 1 }));
     this.updateConsole("You turned " + (this.state.age + 1) + "!");
     this.checkAge();
+	this.toggleNewEvent();
+  }
+
+  restartGame() {
+    window.location.reload()
   }
 
   toggleStatMenu() {
@@ -122,6 +135,10 @@ export default class GamePage extends React.Component {
 	toggleRealEstate() {
 		this.setState(prevState => ({ showRealEstate: !prevState.showRealEstate }));
 	  }
+	  
+	toggleNewEvent() {
+    this.setState(prevState => ({ showNewEvent: !prevState.showNewEvent }));
+  }
 	  
   handleGambleChange(event) {
     this.setState({ gambleAmount: event.target.value });
@@ -152,7 +169,19 @@ export default class GamePage extends React.Component {
 			showRealEstate: false,
 			balance: prevState.balance - 100,
 		  }));
+		this.updateConsole("You purchased a "+ this.state.realEstate[0][0]);
 	  }
+	  
+	 handleNewEvent(event) {
+		event.preventDefault();
+		const response = event.target.EventResponse.value;
+		if (response.trim()) {
+        this.setState({ EventResponse: response, showNewEvent: false });
+      } else {
+        alert('Please enter a valid name.');
+      }
+	  this.updateConsole(response);                                                               //remove later
+    }
 
   checkBankruptcy() {
     if (this.state.balance <= 0.01) {
@@ -179,7 +208,7 @@ export default class GamePage extends React.Component {
       liveFrame3 = frame9;
       
     }
-    else if (this.state.age >= 50) {
+    else if (this.state.age >= 65) {
       liveFrame1 = frame10;
       liveFrame2 = frame11;
       liveFrame3 = frame12;
@@ -228,7 +257,9 @@ export default class GamePage extends React.Component {
       }
     }
 
-
+	handleTIAA(event) {
+		this.updateConsole("-Who are you?- Yu.- No, not me. You.- Yes, I am Yu.Just answer the damn questions.- Who are you?- I have told you.- Are you deaf?- No, Yu is blind.I'm not blind, you blind.- That is what I just said. You just said what?- I did not say what, I said Yu.- That's what I'm asking you.- And Yu is answering.- Shut up!");
+	}
 
   //styling elements
   render() {
@@ -279,6 +310,19 @@ export default class GamePage extends React.Component {
       fontWeight: 'bold'
     };
 
+    const restartButtonStyle = {
+      backgroundColor: 'red',
+      color: 'white',
+      fontSize: '16px',
+      padding: '10px 20px',
+      margin: '10px',
+      border: 'none',
+      borderRadius: '100px',
+      cursor: 'pointer',
+      outline: 'none',
+      fontWeight: 'bold'
+    };
+
     const plusStyle = {
       fontSize: '30px',
       marginRight: '5px'
@@ -317,14 +361,15 @@ export default class GamePage extends React.Component {
     };
 
     const bottomButtonContainerStyle = {
-      position: 'fixed',
-      bottom: '10px',
+      backgroundColor: 'rgba(255,255,255,0.5)',
+	  position: 'fixed',
+     bottom: '10px',
       left: '50%',
       transform: 'translateX(-50%)',
       display: 'flex',
       justifyContent: 'center',
       width: '100%',
-      zIndex: 0
+      zIndex: 0,
     };
 
     const gambleMenuStyle = {
@@ -354,6 +399,20 @@ export default class GamePage extends React.Component {
 		zIndex: 2,
 		borderRadius: '10px'
 	  };
+	  
+	const newEventStyle = {
+		display: this.state.showNewEvent ? 'block' : 'none',
+		position: 'fixed',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: '300px',
+		backgroundColor: '#ffffff',
+		boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+		padding: '20px',
+		zIndex: 2,
+		borderRadius: '10px'
+	}
 	  
     const bankruptModalStyle = {
 		position: 'fixed',
@@ -454,6 +513,17 @@ export default class GamePage extends React.Component {
 			
 		};
 		
+		
+		const BalanceImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 10,
+			left: 300,
+			
+		};
+		
 		const incomeImageStyle = {
 			objectFit: 'cover',
 			width: '50px',
@@ -474,6 +544,24 @@ export default class GamePage extends React.Component {
 			
 		};
 		
+		const TIAAImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 11,
+			marginLeft: 20,
+		};
+		
+		const statImageStyle = {
+			objectFit: 'cover',
+			width: '50px',
+			height: '50px',	
+			position: 'fixed',
+			bottom: 15,
+			marginLeft: 70,
+		};
+		
 		const ageTextAlign = {
 			position: 'absolute',
 			bottom: 0,
@@ -485,6 +573,13 @@ export default class GamePage extends React.Component {
 			position: 'absolute',
 			bottom: 0,
 			left: 200,
+			textAlign: 'left',
+		};
+		
+		const balanceTextAlign = {
+			position: 'absolute',
+			bottom: 0,
+			left: 350,
 			textAlign: 'left',
 		};
 		
@@ -501,9 +596,15 @@ export default class GamePage extends React.Component {
 			right: 200,
 			textAlign: 'left',
 		};
-      
+		
+		const invisibilityPotion = {
+			background: 'transparent',
+			border: 'none',
+		};
+		
     return (
       <div>
+	  {/* Get Name */}
         {this.state.showNameModal && (
             <div style={nameModalStyle}>
                 <form onSubmit={this.handleNameSubmit}>
@@ -549,13 +650,27 @@ export default class GamePage extends React.Component {
             
             {/* Activities Menu */}
             <div style={activitiesMenuStyle}>
-              {/* buttons to change / implement */}
+              {/* buttons for 18+*/}
               <button>Apply for Job</button>
               <button>Stock Market</button>
+              <button onClick={this.toggleGamble}>Gamble</button>
               <button>Roth IRA</button>
+              
+              {/* buttons for 22+ */}
+              {this.state.age >= 22 && (
+              <>
               <button onClick={() => this.purchaseHouse()}>Purchase House</button>
 			  <button onClick={this.toggleRealEstate}>Buy Real Estate</button>
-              <button onClick={this.toggleGamble}>Gamble</button>
+              <button onClick={this.toggleGamble}>Gamble</button>	
+              </>
+              )}
+              {/* buttons for 50+ */}
+              {this.state.age >=  50 && (
+              <button>Retire!</button>
+              )}
+			  
+			  <br />
+			  <button onClick={this.toggleActivities}>Close</button>
             </div>
             {/* Gamble Menu */}
             {this.state.showGamble && (
@@ -577,20 +692,21 @@ export default class GamePage extends React.Component {
                 </form>
             </div>
             )}
+			{/* Real Estate Menu*/}
 			{this.state.showRealEstate && (
 				<div style={realEstateMenuStyle}>
 					<form onSubmit={this.handleRealEstate}>
-				  <button onClick={this.handleRealEstate}>Mansion for $100</button>
-				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button>
-				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button>
+				  <button onClick={this.handleRealEstate}>Mansion for $100</button><br />
+				  <button onClick={this.handleRealEstate}>Crappy apartment for $500</button><br />
+				  <button onClick={this.handleRealEstate}>5 square meters of land for $200</button><br />
 					<button type="button" onClick={this.toggleRealEstate}>Cancel</button>
 					</form>
 				</div>
 				)}
-                {this.state.showStatMenu && (
-				<div style={statMenuStyle}>
-					<form onSubmit={this.handleRealEstate}>
-					<label>
+				{/* Stat Menu */}
+            {this.state.showStatMenu && (
+			<div style={statMenuStyle}>
+				<label>
 					Age: {this.state.age}
 					<br />
 					Balance: ${this.state.balance.toFixed(2)}
@@ -599,13 +715,21 @@ export default class GamePage extends React.Component {
 					<br />
 					Background: {this.state.backgroundInfo}
 					<br />
-					</label>
-					<button type="button" onClick={this.toggleStatMenu}>Close</button>
-					</form>
-				</div>
-				)}
+				</label>
+				<button type="button" onClick={this.toggleStatMenu}>Close</button>
+			</div>
+			)}
+			{/* New Event Response*/}
+			{this.state.showNewEvent && (
+			<div style={newEventStyle}>
+				<form onSubmit={this.handleNewEvent}>
+					<p>Lorem ipsum</ p>
+					<input type="text" name="EventResponse" required />
+				<button type="submit" >Submit</button>
+				</form>
+			</div>
+			)}
         </div>
-
         {/* bottom of screen */}
         <div style={bottomButtonContainerStyle}>
 		
@@ -613,16 +737,24 @@ export default class GamePage extends React.Component {
 			<h1 style={ageTextAlign}>{this.state.age}</ h1>
 			<img src={job} style={jobImageStyle} alt='job image' />
 			<h1 style={jobTextAlign}>{this.state.job}</ h1>
+			<img src={coin} style={BalanceImageStyle} alt='balance image' />
+			<h1 style={balanceTextAlign}>{this.state.balance.toFixed(2)}</ h1>
 			
 			<img src={arrowup} style={incomeImageStyle} alt='income image' />
-			<h1 style={incomeTextAlign}>{this.state.income}</ h1>
+			<h1 style={incomeTextAlign}>+${this.state.income}</ h1>
 			<img src={arrowdown} style={expensesImageStyle} alt='expenses image' />
-			<h1 style={expensesTextAlign}>{this.state.expenses}</ h1>
-		
+			<h1 style={expensesTextAlign}>-${this.state.expenses}</ h1>
+		  
+		  {/* Restart Game Button*/}
+                <button onClick={this.restartGame} style={restartButtonStyle} type="button">
+                  Restart Game
+                </button>
           {/* Increment Age Button*/}
           <button onClick={this.increaseAge} style={ageButtonStyle} type="button">
             <span style={plusStyle}>+ </span>Age
           </button>
+
+          
 
           {/* Activities Button */}
           <button
@@ -632,6 +764,16 @@ export default class GamePage extends React.Component {
           >
             Activities
           </button>
+		  
+		  {/* this could be improved. The button and image are not overlapping*/}
+		  <button style={invisibilityPotion} onClick={this.handleTIAA}>
+			<img src={TIAA}  style={TIAAImageStyle} alt='TIAA advisor'/>
+		  </button>
+		  
+		  {/* this could be improved. The button and image are not overlapping*/}
+		  <button style={invisibilityPotion} onClick={this.toggleStatMenu}>
+			<img src={stat} style={statImageStyle} alt='stat image' />
+		  </button>
         </div>
         {/* Animation Frames */}
     <div style={animationContainerStyle}>
@@ -639,7 +781,7 @@ export default class GamePage extends React.Component {
         this.state.currentFrame === 0 ? liveFrame1 :
         this.state.currentFrame === 1 ? liveFrame2 :
         liveFrame3
-    } alt="Character Animation" />
+    }  alt="Character Animation" />
 </div>
 
     {/* out of money (bankruptcy) */}
