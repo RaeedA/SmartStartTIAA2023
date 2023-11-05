@@ -170,7 +170,7 @@ export default class GamePage extends React.Component {
   }
 
     increaseAge() {
-        this.setState(prevState => ({ age: prevState.age + 20 }), () => {
+        this.setState(prevState => ({ age: prevState.age + 1 }), () => {
             this.updateConsole("Aging Up...")
             this.checkAge();
             const toSend = {
