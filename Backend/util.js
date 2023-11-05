@@ -11,14 +11,13 @@ async function chatWithGPT(messageList, functions = [], callback = null) {
     const openai = new OpenAIClient("https://tiaa-openai-azure-sweden.openai.azure.com/", new AzureKeyCredential("be9bdecc8bf64e85bde69c04b2ad56f8"))
     try {
         var options = {
-            temperature: 0.4
+            temperature: 0.7
         };
         if(functions.length > 0) {
             options.functions = functions
             options.functionCall = "auto"
         }
         const GPTOutput = await openai.getChatCompletions("tiaa-gpt-4", messageList, options)
-        //console.log(GPTOutput.choices[0])
         const choice = GPTOutput.choices[0]
         if(choice.finishReason == "function_call") {
             functionCall = choice.message.functionCall
